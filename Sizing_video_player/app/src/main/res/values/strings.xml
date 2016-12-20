@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Sizing_video_player</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_sizing_video_view_">Sizing_video_view_Activity</string>
+</resources>
