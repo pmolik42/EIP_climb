@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <title>Test</title>
+
+  <link rel="stylesheet" href="projekktor/theme/maccaco/projekktor.style.css" type="text/css" media="screen" />
+  
+  <script type="text/javascript" src="projekktor/jquery-1.9.1.min.js"></script>
+  <script type="text/javascript" src="projekktor/projekktor-1.3.09.min.js"></script>
+</head>
+
+<body>
+<!--   <h1>OUVRE TA VIDEO ENCULE DE LECTEUR !!</h1>
+
+    <video controls width="1000" height="600">
+       <source src="C://xampp/htdocs/Sizing/media/Heavy_Object_18_vostfr.mp4"/>
+    </video>
+-->
+  
+  <video id="player" class="projekktor" poster="projekktor/media/intro.png" title="Projekktor_player" width="640" height="360" controls>
+    <source src="C://xampp/htdocs/Sizing/media/Heavy_Object_18_vostfr.ogv" type="video/ogg" />
+    <source src="C://xampp/htdocs/Sizing/media/Heavy_Object_18_vostfr.mp4" type="video/mp4" />
+  </video>
+
+  <script type="text/javascript">
+         $(document).ready(function() {
+           projekktor('#player', {
+             volume: 0.5,
+	      /* path to the MP4 Flash-player fallback component */
+	      playerFlashMP4: 'projekktor/swf/StrobeMediaPlayback/StrobeMediaPlayback.swf',
+	        
+	      /* path to the MP3 Flash-player fallback component */
+	      playerFlashMP3: 'projekktor/swf/StrobeMediaPlayback/StrobeMediaPlayback.swf'         
+               });
+         });
+  </script>
+  
+</body>
+</html>
