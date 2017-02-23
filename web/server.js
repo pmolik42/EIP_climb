@@ -12,7 +12,7 @@ var flash = require('connect-flash');
 var config = require('./config/config.js');
 
 // configuration
-mongoose.connect(config.url); // connect to our database
+mongoose.connect(config.database.url); // connect to our database
 
 var db = mongoose.connection;
 
