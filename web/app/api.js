@@ -80,7 +80,7 @@ module.exports = function(app) {
 	});
 
 	// LOGOUT
-	app.get('/logout', function(req, res) {
+	app.get('/api/logout', function(req, res) {
 
 	});
 };

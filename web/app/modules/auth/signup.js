@@ -48,16 +48,12 @@ module.exports = function(userInfos, callback) {
         newUser.createdAt = new Date();
         newUser.updatedAt = new Date();
 
-        console.log(newUser);
-        newUser.save(function(err) {
+        newUser.save(function(err, data) {
           if (err)
             throw err;
-          return callback(null, newUser);
+          return callback(null, data);
         });
       }
-
-      // all is well, return successful user
-      return callback(null, user);
   });
 
 };
