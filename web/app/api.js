@@ -44,7 +44,7 @@ module.exports = function(app) {
 	});
 
 	// process the signup form
-	app.post('/api/signup', function(req, res) {
+	app.post('/api/register', function(req, res) {
 
 		var userInfos = {
 			username: req.body.username || '',
@@ -53,9 +53,10 @@ module.exports = function(app) {
 			confirmPassword: req.body.confirmPassword
 		};
 
-		signup(userInfos, function(error, user, data) {
+		signup(userInfos, true, function(error, user, data) {
 			if (error || !user) {
-				res.json( { success: false, messages: data.errors } );
+				console.log(data);
+				res.json( { success: false, message: data } );
 			} else {
         var token = jwt.sign(user, app.get('secret'), {
           expiresIn: '7d' // expires in 7 days
@@ -75,7 +76,7 @@ module.exports = function(app) {
 	// PROFILE SECTION
 	// we will want this protected so you have to be logged in to visit
 	// we will use route middleware to verify this (the isLoggedIn function)
-	app.get('/api/profile', isValidToken, function(req, res) {
+	app.get('/api/register', isValidToken, function(req, res) {
     res.json( { success: true, user: req.user } );
 	});
 

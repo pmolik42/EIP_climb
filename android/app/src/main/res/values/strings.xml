@@ -1,3 +1,15 @@
 <resources>
-    <string name="app_name">Climb</string>
+    <string name="appName">Climb</string>
+
+    <string name="login">Login</string>
+    <string name="usernameOrEmailPlaceholder">Email or Username</string>
+    <string name="passwordPlaceholder">Password</string>
+    <string name="noAccount">No account yet ?</string>
+
+    <string name="signup">Signup</string>
+    <string name="haveAccount">Already registered ?</string>
+    <string name="usernamePlaceholder">Username</string>
+    <string name="emailPlaceholder">Email</string>
+    <string name="confirmPasswordPlaceholder">Confirm password</string>
+    <string name="submit">Submit</string>
 </resources>

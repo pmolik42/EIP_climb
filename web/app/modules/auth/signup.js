@@ -4,9 +4,9 @@ var validator = require('validator');
 // load the user model
 var User = require('../../models/user.js');
 
-module.exports = function(userInfos, callback) {
+module.exports = function(userInfos, isApi, callback) {
 
-  var errorMessages = checkUserInfosValidity(userInfos);
+  var errorMessages = checkUserInfosValidity(userInfos, isApi);
 
   if (errorMessages) {
     return callback(null, false, errorMessages);
@@ -29,14 +29,22 @@ module.exports = function(userInfos, callback) {
 
       // if user is found, return the message
       if (user) {
-        if (user.local.email == userInfos.email)
+        if (user.local.email == userInfos.email) {
           messages.errors.email = 'This account already exists.';
-        if (user.profile.username == userInfos.username)
+          if (isApi)
+            return callback(null, false, messages.errors.email);
+        }
+        if (user.profile.username == userInfos.username) {
           messages.errors.username = 'This username is taken.';
+          if (isApi)
+            return callback(null, false, messages.errors.username);
+        }
         return callback(null, false, messages);
       } else {
         if (!validator.equals(userInfos.password, userInfos.confirmPassword)) {
           messages.errors.password = 'The passwords are not matching.';
+          if (isApi)
+            return callback(null, false, messages.errors.password);
           return callback(null, false, messages);
         }
         var newUser = new User();
@@ -68,7 +76,7 @@ var checkUsernameValidity = function(username) {
 
 
 // check if the user credentials are valid
-var checkUserInfosValidity = function(userInfos) {
+var checkUserInfosValidity = function(userInfos, isApi) {
 
   var isValid = true;
   var messages = {
@@ -80,10 +88,14 @@ var checkUserInfosValidity = function(userInfos) {
 
   if (checkEmailValidity(userInfos.email) == false) {
     messages.errors.email = 'Sorry, this email is not valid';
+    if (isApi)
+      return { message: messages.errors.email };
     isValid = false;
   }
   if (checkUsernameValidity(userInfos.username) == false) {
     messages.errors.username = 'Username must be alphanumerical, at least 3 characters';
+    if (isApi)
+      return { message: messages.errors.username };
     isValid = false;
   }
 

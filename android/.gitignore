@@ -2,6 +2,7 @@
 .gradle
 /build
 /.idea
+projectFilesBackup/
 *.iml
 local.properties
 .DS_Store

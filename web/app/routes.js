@@ -34,7 +34,7 @@ module.exports = function(app, passport) {
 			confirmPassword: req.param('confirmPassword')
 		};
 
-		signup(userInfos, function(error, user, data) {
+		signup(userInfos, false, function(error, user, data) {
 			if (error || !user) {
 				req.session.data = data;
 				return res.redirect('/#toregister');
