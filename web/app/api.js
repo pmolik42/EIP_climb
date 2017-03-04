@@ -55,7 +55,6 @@ module.exports = function(app) {
 
 		signup(userInfos, true, function(error, user, data) {
 			if (error || !user) {
-				console.log(data);
 				res.json( { success: false, message: data } );
 			} else {
         var token = jwt.sign(user, app.get('secret'), {
