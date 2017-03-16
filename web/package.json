@@ -1,6 +1,7 @@
 {
   "name": "climb",
   "main": "server.js",
+  "private": "true",
   "dependencies": {
     "bcrypt-nodejs": "latest",
     "body-parser": "~1.0.0",
