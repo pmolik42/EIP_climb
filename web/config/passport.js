@@ -1,13 +1,14 @@
 // config/passport.js
 
 // load all the things we need
-var LocalStrategy = require('passport-local').Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 
 // load the user model
-var User = require('../app/models/user.js');
+const User = require('../app/models/user.js');
 
 // expose this function to our app using module.exports
-module.exports = function(passport) {
+
+const passport = (passport) => {
 
     passport.serializeUser(function(user, done) {
       done(null, user._id);
@@ -25,13 +26,13 @@ module.exports = function(passport) {
         passwordField : 'password',
         passReqToCallback : true // allows us to pass back the entire request to the callback
     },
-    function(req, email, password, done) { // callback with email and password from our form
+    (req, email, password, done) => { // callback with email and password from our form
 
         // find a user whose email is the same as the forms email
         // we are checking to see if the user trying to login already exists
-        User.findOne( { $or: [ {'local.email' : email }, {'profile.username' : email } ] }, function(err, user) {
+        User.findOne( { $or: [ {'local.email' : email }, {'profile.username' : email } ] }, (err, user) => {
             // if there are any errors, return the error before anything else
-            var messages = {
+            let messages = {
               errors: {
                 username : '',
                 password : ''
@@ -60,3 +61,5 @@ module.exports = function(passport) {
     }));
 
 };
+
+module.exports = passport;
