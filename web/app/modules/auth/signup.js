@@ -56,7 +56,7 @@ module.exports = function(userInfos, isApi, callback) {
         newUser.createdAt = new Date();
         newUser.updatedAt = new Date();
 
-        newUser.save(function(err, data) {
+        newUser.save((err, data) => {
           if (err)
             throw err;
           return callback(null, data);

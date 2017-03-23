@@ -1,4 +1,6 @@
 const isLoggedIn = require('../../middlewares.js').isLoggedIn;
+const Article = require('../../models/article.js');
+const async = require('async');
 
 const homeRoutes = (app) => {
 
@@ -8,9 +10,23 @@ const homeRoutes = (app) => {
 	});
 
 	app.get('/home', isLoggedIn, (req, res) => {
-		res.render('pages/home.ejs', {
-			user : req.user // get the user out of session and pass to template
+
+		async.waterfall([
+			(cb) => {
+				Article.find({}).limit(5).sort('-updatedAt').exec((err, articles) => {
+					if (err) return cb(err);
+					cb(null, articles);
+				});
+			}
+		], (err, results) => {
+			if (err) throw err;
+			console.log(results);
+			res.render('pages/home.ejs', {
+				user : req.user, // get the user out of session and pass to template
+				articles : results
+			});
 		});
+
 	});
 
 };

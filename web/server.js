@@ -52,6 +52,14 @@ app.set('secret', config.secret);
 require('./app/routes.js')(app, passport); // load our routes and pass in our app and fully configured passport
 require('./app/api.js')(app); // api routes
 
+// Populate Database
+require('./test/create_sample_data.js')((err, data) => {
+  if (err) return console.log(err);
+  if (data) {
+    console.log('Articles in database');
+  }
+});
+
 // launch
 app.listen(port);
 console.log('Listening on port : ' + port);
