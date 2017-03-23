@@ -1,41 +1,103 @@
 <!-- views/profile.ejs -->
 <!doctype html>
 <html>
-<head>
-	<title>Climb</title>
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
-	<link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
-	<style>
-		body 		{ padding-top:80px; word-wrap:break-word; }
-	</style>
-</head>
-<body>
-<div class="container">
 
-	<div class="page-header text-center">
-		<h1><span class="fa fa-anchor"></span> Profile Page</h1>
-		<a href="/logout" class="btn btn-default btn-sm">Logout</a>
-	</div>
+	<% include ../components/head.ejs %>
 
-	<div class="row">
+	<body>
+		<% include ../components/navbar.ejs %>
 
-		<!-- LOCAL INFORMATION -->
-		<div class="col-sm-6">
-			<div class="well">
-				<h3><span class="fa fa-user"></span> Local</h3>
+		<div class="container">
+        <div class="row">
+            <div class="col-xs-12 banner">
+                <img class="img-responsive img-rounded-border" src="images/banner.JPG" alt="profile-banner">
+            </div>
+        </div>
+        <div class="row" style="margin-top: 10px;">
+            <div class="col-xs-offset-1 col-xs-10 col-sm-offset-0 col-sm-2">
+                <img class="img-responsive img-rounded" src="images/profile_picture.jpg" alt="profile-picture">
+            </div>
+            <div class="col-xs-12 col-sm-10">
+                <h1 class="text-center" style="padding-top: 51px; padding-bottom: 51px;">Nicolas Dupont</h1>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-xs-12" style="padding-top: 10px;">
+                <div class="well bs-component">
+                <form class="form-horizontal">
+                  <fieldset>
+                    <legend>Mes informations</legend>
 
-					<p>
-						<strong>id</strong>: <%= user._id %><br>
-						<strong>username</strong>: <%= user.profile.username %><br>
-						<strong>email</strong>: <%= user.local.email %><br>
-						<strong>password</strong>: <%= user.local.password %>
-					</p>
+                    <div class="form-group is-empty">
+                      <label for="inputLastName" class="col-md-2 control-label">Last Name</label>
 
-			</div>
-		</div>
+                      <div class="col-md-10">
+                        <input class="form-control" id="inputLastName" placeholder="Last Name" type="text">
+                      </div>
+                    </div>
 
-	</div>
+                    <div class="form-group is-empty">
+                      <label for="inputFirstName" class="col-md-2 control-label">First Name</label>
 
-</div>
-</body>
+                      <div class="col-md-10">
+                        <input class="form-control" id="inputFirstName" placeholder="First Name" type="text">
+                      </div>
+                    </div>
+
+                    <div class="form-group" style="margin-top: 0;"> <!-- inline style is just to demo custom css to put checkbox below input above -->
+                      <div class="col-md-offset-2 col-md-10">
+                        <div class="checkbox">
+                          <label>
+                            <input type="checkbox"><span class="checkbox-material"><span class="check"></span></span> Male
+                          </label>
+                          <label style="margin-left: 20px;">
+                            <input type="checkbox"><span class="checkbox-material"><span class="check"></span></span> Female
+                          </label>
+                        </div>
+                      </div>
+                    </div>
+
+                    <div class="form-group is-empty">
+                      <label for="inputEmail" class="col-md-2 control-label">Email</label>
+
+                      <div class="col-md-10">
+                        <input class="form-control" id="inputEmail" placeholder="Email" type="email">
+                      </div>
+                    </div>
+
+                    <div class="form-group is-empty">
+                      <label for="inputBirthDate" class="col-md-2 control-label">Birthday</label>
+
+                      <div class="col-md-10">
+                        <input class="form-control" id="inputBirthDate" placeholder="Birthday" type="text">
+                      </div>
+                    </div>
+
+                    <div class="form-group is-empty">
+                      <label for="inputTel" class="col-md-2 control-label">Phone Number</label>
+
+                      <div class="col-md-10">
+                        <input class="form-control" id="inputTel" placeholder="06 01 04 58 74" type="tel">
+                      </div>
+                    </div>
+                  </div>
+            </div>
+        </div>
+
+      <hr>
+
+      <% include ../components/footer.ejs %>
+
+    </div><!--/.container-->
+
+	</body>
+
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="assets/jquery/jquery-3.1.1.min.js"></script>
+	<script src="assets/bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>
+	<!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+	<script src="assets/js/ie10-viewport-bug-workaround.js"></script>
+
 </html>

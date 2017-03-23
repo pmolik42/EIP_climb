@@ -18,7 +18,7 @@ const authRoutes = (app, passport) => {
 				req.login(user, (err) => {
 					if (err)
 						throw err;
-					return res.redirect('/profile');
+					return res.redirect('/home');
 				});
 			}
   	})(req, res);
@@ -42,7 +42,7 @@ const authRoutes = (app, passport) => {
 				req.login(user, (err) => {
 					if (err)
 						throw err;
-					return res.redirect('/profile');
+					return res.redirect('/home');
 				});
 			}
 		});
