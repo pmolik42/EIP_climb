@@ -36,14 +36,14 @@ const createArticles = (callback) => {
         if (err) throw err;
         let articles = JSON.parse(data);
         async.each(articles, createArticle, (err, results) => {
-          if (err) cb(err);
+          if (err) return cb(err);
           cb(null, articles);
         });
       });
     }
 
   ], (err, results) => {
-    if (err) callback(err);
+    if (err) return callback(err);
     callback(null, results);
   });
 

@@ -11,7 +11,7 @@ const authApiRoutes = (app) => {
 	// process the login form
 	app.post('/api/authenticate', (req, res) => {
     // find the user
-    User.findOne( { $or: [ { 'local.email': req.body.email }, { 'profile.username': req.body.email } ] }, (err, user) => {
+    User.findOne( { $or: [ { 'local.email': req.body.email }, { 'profile.username': req.body.email } ] }).exec((err, user) => {
 
       if (err)
         throw err;
@@ -30,12 +30,14 @@ const authApiRoutes = (app) => {
           var token = jwt.sign(user, app.get('secret'), {
             expiresIn: '7d' // expires in 7 days
           });
+          
 
           // return the information including token as JSON
           res.json({
             success: true,
             message: 'Authentication successful',
-            token: token
+            token: token,
+            user: user.safeUser(user)
           });
         }
 
@@ -66,18 +68,12 @@ const authApiRoutes = (app) => {
         res.json({
           success: true,
           message: 'Registration successful',
+          user: user.safeUser(user),
           token: token
         });
 			}
 		});
 
-	});
-
-	// PROFILE SECTION
-	// we will want this protected so you have to be logged in to visit
-	// we will use route middleware to verify this (the isLoggedIn function)
-	app.get('/api/register', isTokenValid, (req, res) => {
-    res.json( { success: true, user: req.user } );
 	});
 
 	// LOGOUT

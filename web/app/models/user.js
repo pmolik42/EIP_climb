@@ -18,10 +18,15 @@ var userSchema = mongoose.Schema({
     },
     profile : {
       username : { type: String, required: true, unique: true },
-      verified: { type: Boolean }
+      firstName : String,
+      lastName : String,
+      pictureUrl : String,
+      gender : String,
+      bio : String,
+      verified : { type: Boolean }
     },
-    createdAt: Date,
-    updatedAt: Date
+    createdAt : Date,
+    updatedAt : Date
 });
 
 // methods
@@ -29,6 +34,25 @@ var userSchema = mongoose.Schema({
 userSchema.methods.generateHash = function(password) {
     return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
 };
+
+userSchema.methods.safeUser = (user) => {
+  return {
+    local : {
+      email : user.local.email
+    },
+    profile : {
+      username : user.profile.username,
+      firstName : user.profile.firstName,
+      lastName : user.profile.lastName,
+      pictureUrl : user.profile.pictureUrl,
+      gender : user.profile.gender,
+      bio : user.profile.bio,
+      verified : user.profile.verified
+    },
+    createdAt : user.createdAt,
+    updatedAt : user.updatedAt
+  };
+}
 
 // checking if password is valid
 userSchema.methods.validPassword = function(password) {

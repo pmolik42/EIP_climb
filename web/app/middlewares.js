@@ -1,4 +1,5 @@
-
+const jwt = require('jsonwebtoken'); // used to create, sign, and verify tokens
+const config = require('../config/config.js');
 
 // route middleware to make sure the user is logged
 const isLoggedIn = (req, res, next) => {
@@ -30,7 +31,9 @@ const isTokenValid = (req, res, next) => {
           id: decoded._doc._id,
           email: decoded._doc.local.email,
           username: decoded._doc.profile.username,
-          createdAt: decoded._doc.createdAt
+          pictureUrl : decoded._doc.profile.pictureUrl,
+          createdAt: decoded._doc.createdAt,
+          updatedAt: decoded._doc.updatedAt
         };
 
         // if everything is good, save to request for use in other routes
@@ -53,5 +56,5 @@ const isTokenValid = (req, res, next) => {
 
 	module.exports = {
 	  isLoggedIn : isLoggedIn,
-		isTokenValid : isTokenValid
+      isTokenValid : isTokenValid
 	};

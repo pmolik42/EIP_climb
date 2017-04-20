@@ -56,7 +56,7 @@ require('./app/api.js')(app); // api routes
 require('./test/create_sample_data.js')((err, data) => {
   if (err) return console.log(err);
   if (data) {
-    console.log('Articles in database');
+    console.log('Database with Basic Users, Articles and Videos');
   }
 });
 

@@ -1,15 +1,58 @@
 <resources>
     <string name="appName">Climb</string>
 
-    <string name="login">Login</string>
+    <!-- Placeholder -->
+
     <string name="usernameOrEmailPlaceholder">Email or Username</string>
     <string name="passwordPlaceholder">Password</string>
-    <string name="noAccount">No account yet ?</string>
-
-    <string name="signup">Signup</string>
-    <string name="haveAccount">Already registered ?</string>
     <string name="usernamePlaceholder">Username</string>
     <string name="emailPlaceholder">Email</string>
     <string name="confirmPasswordPlaceholder">Confirm password</string>
-    <string name="submit">Submit</string>
+
+    <!-- ============================================== -->
+
+    <!-- Button Text -->
+
+    <string name="login">Login</string>
+    <string name="register">Register</string>
+    <string name="logout">Logout</string>
+    <string name="follow">Follow</string>
+
+    <!-- ================================ -->
+
+    <!-- Navigation Bar -->
+
+    <string name="home">Home</string>
+    <string name="profile">Profile</string>
+
+    <!-- ==================================== -->
+
+
+    <string name="noAccount">No account yet ?</string>
+
+    <string name="haveAccount">Already registered ?</string>
+
+
+    <!-- Labels -->
+    
+    <string name="categoryLabel">Category :</string>
+    <string name="likes">Likes</string>
+    <string name="views">Views</string>
+
+
+    <!-- =========================================== -->
+     
+    <!-- Sample Data Text -->
+    <string name="sampleFollowers">76 Followers</string>
+    <string name="sampleFollowing">42 Following</string>
+    <string name="sampleName">Younes Iddahamou</string>
+    <string name="sampleBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="sampleUsername">Nescah</string>
+    <string name="sampleVideoCategory">Dance</string>
+    <string name="sampleVideoTitle">Freestyle danse sur Bad and Boujee</string>
+    <string name="sampleVideoLikes">728 Likes</string>
+    <string name="sampleVideoViews">1367 Views</string>
+    <string name="sampleNumberOfVideos">5 Videos</string>
+    <!-- =============================================== -->
+
 </resources>

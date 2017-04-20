@@ -1,0 +1,25 @@
+[
+  {
+    "email" : "admin@climb.com",
+    "username" : "admin",
+    "password" : "admin",
+    "firstName" : "Climb",
+    "lastName" : "Admin",
+    "pictureUrl" : "http://localhost:8080/images/profile_picture.png",
+    "gender" : "male",
+    "bio" : "Admin account of Climb"
+    
+  },
+  
+  {
+    "email" : "test@climb.com",
+    "username" : "test",
+    "password" : "test",
+    "firstName" : "Jane",
+    "lastName" : "Doe",
+    "pictureUrl" : "http://localhost:8080/images/jane_doe.jpeg",
+    "gender" : "female",
+    "bio" : "Hip Hop Dancer from Paris ✌️"
+    
+  }
+]
