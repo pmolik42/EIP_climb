@@ -7,19 +7,20 @@
     <!-- The above 4 meta tags *must* come first in the head; any other head content must come *after* these tags -->
     <meta name="description" content="Venez promouvoir vous même votre talent en faisant des battles vidéos !" />
     <meta name="keywords" content="Climb, Battle, app" />
-    <meta name="author" content="Climb team">
+    <meta name="author" content="Alexis Santo">
     <link rel="icon" href="../../favicon.ico">
     
     <title>Climb</title>
 
     <!-- Bootstrap core CSS -->
-    <link href="./assets/bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="./lib/bootstrap-3.3.7/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <link href="./assets/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="./lib/ie10-viewport-bug-workaround/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="./css/offcanvas.css" rel="stylesheet">
+    <link href="./css/index.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
@@ -38,7 +39,7 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" style="color: white;" href="./index.html">Climb</a>
+          <a class="navbar-brand" style="color: #fff;" href="./index.html">Climb</a>
             <div class="navbar-search visible-xs"> <!-- Trick to show the search-navbar in xs (temporary trick) -->
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Je cherche...">
@@ -48,24 +49,14 @@
                 </div><!-- /.input-group -->
             </div><!-- /.navbar-search -->
         </div>
-          
+           
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
                 <li><a href="#">Ma chaîne</a></li>
-                <li><a href="./index2.html">Mes battles</a></li>
-                <li><a href="#contact">Mes follows</a></li>
-                <li class="dropdown">
-                  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Paramètre de compte <span class="caret"></span></a>
-                  <ul class="dropdown-menu">
-                    <!-- <li class="dropdown-header">Paramètres de compte</li>
-                    <li role="separator" class="divider"></li> -->
-                    <li><a href="#">Vue d'ensemble</a></li>
-                    <li><a href="#">Comptes liés</a></li>
-                    <li><a href="#">Confidentialité</a></li>                                       
-                    <li><a href="#">Notifications</a></li>
-                    <li><a href="#">Lecture</a></li>
-                  </ul>
-                </li>
+                <li><a href="./battle.html">Mes battles</a></li>
+                <li><a href="#">Mes follows</a></li>
+                <li><a href="./ranking.html">Classement</a></li>
+                <li><a href="./account.html">Paramètres</a></li>
           </ul>
           <div class="navbar-search hidden-xs"> <!-- Trick to hide the search-navbar in xs in the toggle navigation (temporary trick) -->
             <div class="input-group">
@@ -169,9 +160,9 @@
           <div class="row">
             <div class="col-xs-12 col-sm-6 col-lg-4">
               <h2>Videos frame</h2>
-                <video class="img-responsive" controls="" width="750" height="450">
-                    <source src="./media/video1.mp4" />
-                </video>
+              <a href="#" class="launch-modal" data-modal-id="modal-video">
+                    <img src="./img/panda.jpg" class="img-responsive" alt="Responsive image">
+              </a>
               <p>Donec id elit non mi porta gravida at eget metus. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet.</p>
               <p><a class="btn btn-default" href="#" role="button">View details &raquo;</a></p>
             </div><!--/.col-xs-12.col-sm-6.col-lg-4-->
@@ -240,14 +231,36 @@
         </footer>
 
     </div><!--/.container-->
+    
+        <!-- MODAL: How it works -->
+    <div class="modal fade" id="modal-video" tabindex="-1" role="dialog" aria-labelledby="modal-video-label">
+            <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                            <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                    </button>
+                            </div>
+        			<div class="modal-body">
+                                    <div class="modal-video">
+	        			<div class="embed-responsive embed-responsive-16by9">
+			                    <iframe class="embed-responsive-item" src="https://player.vimeo.com/video/84910153?title=0&amp;byline=0&amp;portrait=0&amp;badge=0&amp;color=e89a3e" 
+			                    			webkitallowfullscreen mozallowfullscreen allowfullscreen></iframe>
+			                </div>
+                                    </div>
+        			</div>
+                    </div>
+            </div>
+    </div>
 
     <!-- Bootstrap core JavaScript
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
-    <script src="./assets/jquery/jquery-3.1.1.min.js"></script>
-    <script src="./assets/bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>
+    <script src="./lib/jquery-3.1.1/jquery-3.1.1.min.js"></script>
+    <script src="./lib/bootstrap-3.3.7/dist/js/bootstrap.min.js"></script>
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
-    <script src="./assets/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="./lib/ie10-viewport-bug-workaround/js/ie10-viewport-bug-workaround.js"></script>
+    <script src="./js/modal.js"></script>
     <script src="./js/offcanvas.js"></script>
   </body>
 </html>
