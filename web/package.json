@@ -29,5 +29,9 @@
     "passport-twitter": "~1.0.2",
     "request": "^2.81.0",
     "validator": "6.2.1"
+  },
+  "devDependencies": {
+    "chai": "^3.5.0",
+    "request": "^2.81.0"
   }
 }
