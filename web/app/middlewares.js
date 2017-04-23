@@ -24,7 +24,7 @@ const isTokenValid = (req, res, next) => {
     // verifies secret and checks exp
     jwt.verify(token, config.secret, (err, decoded) => {
       if (err) {
-        return res.json({ success: false, message: 'Failed to authenticate token.' });
+        return res.status(403).json({ success: false, message: 'Failed to authenticate token.' });
       } else {
 
         let user = {

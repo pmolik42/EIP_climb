@@ -3,6 +3,7 @@ package com.climb.eip.climb.manager;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -14,11 +15,14 @@ import com.climb.eip.climb.activities.RegisterActivity;
 import com.climb.eip.climb.api.ClimbClientUrl;
 import com.climb.eip.climb.api.models.Session;
 import com.climb.eip.climb.events.GetFailureEvent;
+import com.climb.eip.climb.events.GetHomeEvent;
 import com.climb.eip.climb.events.GetJsonDataEvent;
 import com.climb.eip.climb.events.GetLoginEvent;
 import com.climb.eip.climb.events.GetProfileEvent;
+import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.events.GetRegisterEvent;
 import com.climb.eip.climb.events.GetSessionEvent;
+import com.climb.eip.climb.realm.RealmUser;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -27,6 +31,9 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import io.realm.Realm;
+import io.realm.RealmQuery;
 
 
 /**
@@ -41,6 +48,8 @@ public class ClimbManager {
     private Context mContext;
     private Bus mBus;
     private ClimbClientUrl sClimbClient;
+    private Realm realm = Realm.getDefaultInstance();
+
 
     public ClimbManager(Context context, Bus bus) {
         this.mContext = context;
@@ -134,7 +143,7 @@ public class ClimbManager {
 
 
     @Subscribe
-    public void OnGetProfileEvent(final GetProfileEvent event) {
+    public void onGetProfileEvent(final GetProfileEvent event) {
         final String username = event.getUsername();
 
         JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.profileUrl(username),
@@ -155,10 +164,63 @@ public class ClimbManager {
                     }
                 });
 
-        AppController.getInstance().addToRequestQueue(jsonObjReq, "Profile");
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "Profile/" + username);
     }
 
-    private JsonObjectRequest buildRequest(int method, String url, JSONObject obj, Response.Listener<JSONObject> responseListener) {
+    @Subscribe
+    public void onGetHomeEvent(final GetHomeEvent event) {
+        Log.d(TAG, "PUTAIN DE SA MERE LA PUTE");
+        JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.homeUrl(),
+                null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        try {
+                            if (response.getBoolean("success") == true) {
+                                mBus.post(new GetJsonDataEvent(response));
+                            } else {
+                                mBus.post(new GetFailureEvent(response.getString("message")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mBus.post(new GetFailureEvent(e.getMessage()));
+                        }
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "Home");
+    }
+
+    @Subscribe
+    public void onGetProfileVideosEvent(final GetProfileVideosEvent event) {
+        final String username = event.getUsername();
+
+        JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.profileVideos(username),
+                null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        Log.d(TAG, response.toString());
+                        try {
+                            if (response.getBoolean("success") == true) {
+                                mBus.post(new GetJsonDataEvent(response));
+                            } else {
+                                mBus.post(new GetFailureEvent(response.getString("message")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mBus.post(new GetFailureEvent(e.getMessage()));
+                        }
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "Home");
+    }
+
+    private JsonObjectRequest buildRequest(int method, final String url, JSONObject obj, Response.Listener<JSONObject> responseListener) {
+
+        RealmQuery<RealmUser> query = realm.where(RealmUser.class);
+        final RealmUser user = query.findFirst();
+        final String token = user != null ? user.getToken() : null;
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(method,
                 url, obj,
@@ -170,7 +232,17 @@ public class ClimbManager {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
                 mBus.post(new GetFailureEvent(error.getLocalizedMessage()));
             }
-        }) {};
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                if (token != null) {
+                    params.put("x-access-token", token);
+                }
+
+                return params;
+            }
+        };
 
         return jsonObjReq;
     }

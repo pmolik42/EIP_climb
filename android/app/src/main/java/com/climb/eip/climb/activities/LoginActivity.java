@@ -121,9 +121,6 @@ public class LoginActivity extends AppCompatActivity {
 
     @Subscribe
     public void onGetSessionEvent(final GetSessionEvent event) {
-        //mLoginButton.setEnabled(true);
-        //mRegisterButton.setEnabled(true);
-        //Toast.makeText(this, event.getSession().getMessage(), Toast.LENGTH_SHORT).show();
         asyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {

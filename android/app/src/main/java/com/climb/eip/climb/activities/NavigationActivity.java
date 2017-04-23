@@ -13,10 +13,13 @@ import android.widget.TextView;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.climb.eip.climb.R;
+import com.climb.eip.climb.bus.BusProvider;
 import com.climb.eip.climb.fragments.HomeFragment;
 import com.climb.eip.climb.fragments.ProfileFragment;
+import com.climb.eip.climb.manager.ClimbManager;
 import com.climb.eip.climb.realm.RealmUser;
 import com.climb.eip.climb.utils.Fetcher;
+import com.squareup.otto.Bus;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -48,6 +51,7 @@ public class NavigationActivity extends AppCompatActivity {
     private int mPosition;
     private Realm realm = Realm.getDefaultInstance();
     private Context mContext;
+    private Bus mBus = BusProvider.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +79,15 @@ public class NavigationActivity extends AppCompatActivity {
         this.handleFragmentNavigation(R.id.frame, fragments[mPosition], mPosition);
     }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+    }
+
     private void initNavigationBar() {
         this.initIcons();
         mNavigation.setCurrentItem(mPosition);
+        mTitleBar.setText(navigationItemText[mPosition]);
 
         mNavigation.setDefaultBackgroundColor(Fetcher.fetchColor(this, R.color.white));
         mNavigation.setAccentColor(Fetcher.fetchColor(this, R.color.colorPrimaryDark));

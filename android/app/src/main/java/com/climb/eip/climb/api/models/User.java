@@ -23,9 +23,9 @@ public class User {
     private Date updatedAt;
 
     public User(JSONObject userObject) throws JSONException {
-        this.id = userObject.getString("_id");
+        //this.id = userObject.getString("_id");
         this.email = userObject.getJSONObject("local").getString("email");
-        this.password = userObject.getJSONObject("local").getString("password");
+        //this.password = userObject.getJSONObject("local").getString("password");
         this.username = userObject.getJSONObject("profile").getString("username");
         this.firstName = userObject.getJSONObject("profile").getString("firstName");
         this.lastName = userObject.getJSONObject("profile").getString("lastName");
