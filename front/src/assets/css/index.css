@@ -1,0 +1,193 @@
+/*
+ * Modal
+ * --------------------------------------------------
+ */
+/*Modal centering*/
+.modal {
+  text-align: center;
+  padding: 0!important;
+}
+
+.modal:before {
+  content: '';
+  display: inline-block;
+  height: 100%;
+  vertical-align: middle;
+  margin-right: -4px;
+}
+.modal-backdrop.in {
+   opacity: 0.3; 
+}/*modify the color of the background when we have a modal open*/
+.modal-dialog {
+  display: inline-block;
+  text-align: left;
+  vertical-align: middle;
+}/*!Modal centering*/
+.modal-login-content {
+	background: none;
+	border: 0;
+	-moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+	-moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+}
+#modal-login-header {
+    border: 0;
+    padding: 0;
+}
+#login-icon-header {
+    top: 7px;
+    right: 5px;
+}
+/*hide modal-content frame on the explaining climb modal */
+#modal-explain-content {
+    background-color: transparent;
+    box-shadow: none;
+    border: none;
+    border-radius: 0;
+}
+#modal-explain-header {
+    border-bottom: none;
+}
+/*
+.modal-backdrop.in {
+	filter: alpha(opacity=7);
+	opacity: 0.7;
+}
+.modal-content {
+	background: none;
+	border: 0;
+	-moz-border-radius: 0; -webkit-border-radius: 0; border-radius: 0;
+	-moz-box-shadow: none; -webkit-box-shadow: none; box-shadow: none;
+}
+.modal-body {
+	padding: 0 25px 25px 25px;
+}
+.modal-header {
+	padding: 25px 25px 15px 25px;
+	text-align: right;
+}
+.modal-header, .modal-footer {
+	border: 0;
+}
+.modal-header .close {
+	float: none;
+	margin: 0;
+	font-size: 36px;
+	color: #fff;
+	font-weight: 300;
+	text-shadow: none;
+	opacity: 1;
+}
+*/
+/*
+ * Custom Style
+ * --------------------------------------------------
+ */
+.navbar-search {
+    margin-top: 8px;
+}
+.navbar-toggle {
+    margin-left: 15px;
+}
+.img-rounded-border {
+  border-radius: 12px;
+}
+/* Banner for profile */
+.banner {
+    position: relative;
+}
+.banner-on {
+    position: absolute;
+}
+.on-right-col {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+.on-center-col {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+.text-bold {
+    font-weight: bold;
+}
+.login-form-hr {
+    margin: 10px 0 5px;
+}
+.layout-form {
+    border: 0 none;
+    border-radius: 4px;
+    box-shadow: 0 8px 17px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+    margin-bottom: 20px;
+    padding: 19px;
+    background-color: #fff;
+}
+.layout-form > ul > li {
+    font-size: 14px;
+    list-style: outside none none;
+}
+.layout-form > ul > li > a {
+    text-decoration: none;
+    background-color: transparent;
+    clear: both;
+    color: #333;
+    display: block;
+    font-weight: 400;
+    line-height: 1.42857;
+    padding: 3px 20px;
+    white-space: nowrap;
+}
+.layout-form  a:focus, .layout-form  a:hover {
+    background-color: #D8D8D8;
+    color: #fff;
+}
+.layout-form .active > a {
+    background-color: #616161;
+    color: #fff;
+}
+.checkbox-list {
+    list-style: outside none none;
+    padding-left: 0;
+}
+.list-inline label {
+    cursor: pointer;
+    font-weight: normal;
+}
+/* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#000000+33,ffffff+66&0.5+50,0+100 */
+.gradient-background {
+    background: -moz-linear-gradient(top,  rgba(0,0,0,0.1) 0%, rgba(0,0,0,0.2) 33%, rgba(131,131,131,0.25) 50%, rgba(255,255,255,0.17) 66%, rgba(255,255,255,0) 100%);
+    background: -webkit-linear-gradient(top,  rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.2) 33%,rgba(131,131,131,0.25) 50%,rgba(255,255,255,0.17) 66%,rgba(255,255,255,0) 100%);
+    background: linear-gradient(to bottom,  rgba(0,0,0,0.1) 0%,rgba(0,0,0,0.2) 33%,rgba(131,131,131,0.25) 50%,rgba(255,255,255,0.17) 66%,rgba(255,255,255,0) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1a000000', endColorstr='#00ffffff',GradientType=0 );
+}
+
+/*
+ * Custom Media Queries
+ * --------------------------------------------------
+ */
+@media screen and (min-width: 768px) {
+    footer, .footer #fixed {
+        position: fixed;
+        bottom: 30px;
+        width: 1170px;
+    }
+}
+@media screen and (max-width: 768px) {
+    .layout-form > ul > li > a, .layout-form > h4 {
+        text-align: center;
+    }    
+}
+/*
+ * Style tweaks
+ * --------------------------------------------------
+ */
+html,
+body {
+    overflow-x: hidden; /* Prevent scroll on narrow devices */
+}
+body {
+    padding-top: 70px;
+}
+footer, .footer {
+    padding: 30px 0;
+}
