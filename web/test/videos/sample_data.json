@@ -4,55 +4,55 @@
     "title": "Freestyle Hip Hop | Bad and Boujee",
     "description" : "Freestyle of the week on Bad and Boujee 😎 #migos #newstyle #freestyle",
     "category": "Dance",
-    "url": "https://vimeo.com/194571019",
+    "url": "http://localhost:8080/videos/badandboujee.mp4",
     "thumbnailUrl": "http://localhost:8080/images/video_thumbnail_1.png",
     "createdAt" : "2017-04-12",
     "updatedAt": "2017-04-12"
 
   },
-  
+
   {
 
     "title": "I'm Better Dance Missy Eliott | Freestyle",
     "description" : "Another hip hop freestyle this time to Missy Eliott's new Hit ! #hiphop",
     "category": "Dance",
-    "url": "https://vimeo.com/203696522",
+    "url": "http://localhost:8080/videos/imbetter.mp4",
     "thumbnailUrl": "http://localhost:8080/images/video_thumbnail_2.png",
     "createdAt" : "2017-04-10",
     "updatedAt": "2017-04-10"
 
   },
-  
+
   {
 
     "title": "WORK Rihanna Choreography",
     "description" : "Trio choreography with my friends 💃",
     "category": "Dance",
-    "url": "https://vimeo.com/212467522",
+    "url": "http://localhost:8080/videos/work.mp4",
     "thumbnailUrl": "http://localhost:8080/images/video_thumbnail_3.png",
     "createdAt" : "2017-03-30",
     "updatedAt": "2017-03-30"
 
   },
-  
+
   {
 
     "title": "Popping Session in the streets",
     "description" : "Today my friend went outside to shoot a freestyle video ! Enjoy ✌️",
     "category": "Dance",
-    "url": "https://vimeo.com/160646015",
+    "url": "http://localhost:8080/videos/popping.mp4",
     "thumbnailUrl": "http://localhost:8080/images/video_thumbnail_4.png",
     "createdAt" : "2017-03-15",
     "updatedAt": "2017-03-15"
 
   },
-  
+
   {
 
     "title": "First Dance Video :D",
     "description" : "Hey guys ! This is my first dance video, I hope you'll enjoy it ☺️",
     "category": "Dance",
-    "url": "https://vimeo.com/207869497",
+    "url": "http://localhost:8080/videos/first.mp4",
     "thumbnailUrl": "http://localhost:8080/images/video_thumbnail_5.png",
     "createdAt" : "2017-03-08",
     "updatedAt": "2017-03-08"

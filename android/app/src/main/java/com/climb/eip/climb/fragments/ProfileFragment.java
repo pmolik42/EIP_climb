@@ -32,6 +32,7 @@ import com.climb.eip.climb.events.GetJsonDataEvent;
 import com.climb.eip.climb.events.GetProfileEvent;
 import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.manager.ClimbManager;
+import com.climb.eip.climb.realm.RealmUser;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
@@ -45,6 +46,9 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmAsyncTask;
+import io.realm.RealmQuery;
 
 /**
  * Created by Younes on 24/03/2017.
@@ -78,6 +82,8 @@ public class ProfileFragment extends Fragment {
     private ClimbManager mClimbManager;
     private boolean isLoaded = false;
     private String pictureUrl;
+    private RealmAsyncTask asyncTask;
+    private Realm realm = Realm.getDefaultInstance();
 
     @Override
     public void onAttach(Context context) {
@@ -144,16 +150,28 @@ public class ProfileFragment extends Fragment {
         }
         mListener.setToolbarTitle(username);
         mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, new ArrayList<Video>()));
     }
 
     private void initLogoutButton() {
+        mVideos.removeAll(mVideos);
         mLogoutButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(mContext, LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                final RealmQuery<RealmUser> query = realm.where(RealmUser.class);
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                        // remove single match
+                        query.findFirst().deleteFromRealm();
+                        Intent intent = new Intent(mContext, LoginActivity.class);
+                        startActivity(intent);
+                        mListener.finish();
+
+                    }
+                });
+
+
             }
         });
     }
@@ -180,7 +198,9 @@ public class ProfileFragment extends Fragment {
 
     private void onVideosReceived(JSONArray videos) {
         for (int i = 0; i < videos.length(); i++) {
-            mVideos.add(createVideo(videos.optJSONObject(i)));
+            Video video = createVideo(videos.optJSONObject(i));
+            if (mVideos.size() < 5)
+                mVideos.add(video);
         }
 
         mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));
@@ -206,7 +226,8 @@ public class ProfileFragment extends Fragment {
         mBio.setVisibility(View.VISIBLE);
 
         pictureUrl = profile.optString("pictureUrl");
-        Picasso.with(mContext).load(pictureUrl.replace("localhost", "10.0.2.2")).into(mProfilePicture);
+        if (pictureUrl.length() > 0)
+            Picasso.with(mContext).load(pictureUrl.replace("localhost", "10.0.2.2")).into(mProfilePicture);
 
     }
 
@@ -216,6 +237,7 @@ public class ProfileFragment extends Fragment {
         JSONObject object = event.getObject();
 
         if (object.optJSONArray("videos") != null) {
+            mVideos.removeAll(mVideos);
             onVideosReceived(object.optJSONArray("videos"));
         } else {
             onProfileReceived(object);

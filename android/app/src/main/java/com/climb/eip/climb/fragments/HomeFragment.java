@@ -154,9 +154,11 @@ public class HomeFragment extends Fragment {
         JSONObject object = event.getObject();
 
         try {
+            mVideos.removeAll(mVideos);
             JSONArray videos = object.getJSONArray("videos");
             for (int i = 0; i < videos.length(); i++) {
-                mVideos.add(createVideo(videos.getJSONObject(i)));
+                if (mVideos.size() < 5)
+                    mVideos.add(createVideo(videos.getJSONObject(i)));
             }
             mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
             mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));

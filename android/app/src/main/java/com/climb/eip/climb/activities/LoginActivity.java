@@ -62,7 +62,7 @@ public class LoginActivity extends AppCompatActivity {
 
         RealmQuery<RealmUser> query = realm.where(RealmUser.class);
         RealmUser user = query.findFirst();
-        if (user != null) {
+        if (user != null && user.getToken().length() > 0) {
             Intent intent = new Intent(mContext, NavigationActivity.class);
             startActivity(intent);
             finish();

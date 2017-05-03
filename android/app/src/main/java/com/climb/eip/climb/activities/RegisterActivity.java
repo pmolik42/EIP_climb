@@ -15,11 +15,14 @@ import com.climb.eip.climb.events.GetFailureEvent;
 import com.climb.eip.climb.events.GetRegisterEvent;
 import com.climb.eip.climb.events.GetSessionEvent;
 import com.climb.eip.climb.manager.ClimbManager;
+import com.climb.eip.climb.realm.RealmUser;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import io.realm.Realm;
+import io.realm.RealmAsyncTask;
 
 /**
  * Created by Younes on 24/03/2017.
@@ -45,6 +48,8 @@ public class RegisterActivity extends AppCompatActivity {
     private ClimbManager mClimbManager;
     private Bus mBus = BusProvider.getInstance();
     private Context mContext;
+    private RealmAsyncTask asyncTask;
+    private Realm realm = Realm.getDefaultInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -101,13 +106,30 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onGetSessionEvent(GetSessionEvent event) {
-        //mLoginButton.setEnabled(true);
-        //mRegisterButton.setEnabled(true);
+    public void onGetSessionEvent(final GetSessionEvent event) {
         //Toast.makeText(this, event.getSession().getMessage(), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, NavigationActivity.class);
-        startActivity(intent);
-        finish();
+        asyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
+            @Override
+            public void execute(Realm realm) {
+                RealmUser user = realm.createObject(RealmUser.class);
+                user.setEmail(event.getUser().getEmail());
+                user.setUsername(event.getUser().getUsername());
+                user.setPassword(event.getUser().getPassword());
+                user.setToken(event.getToken());
+            }
+        }, new Realm.Transaction.OnSuccess() {
+            @Override
+            public void onSuccess() {
+                Intent intent = new Intent(mContext, NavigationActivity.class);
+                startActivity(intent);
+                finish();
+            }
+        }, new Realm.Transaction.OnError() {
+            @Override
+            public void onError(Throwable error) {
+
+            }
+        });
     }
 
     @Subscribe
