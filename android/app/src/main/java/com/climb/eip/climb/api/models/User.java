@@ -22,15 +22,15 @@ public class User {
     private Date createdAt;
     private Date updatedAt;
 
-    public User(JSONObject userObject) throws JSONException {
+    public User(JSONObject userObject) {
         //this.id = userObject.getString("_id");
-        this.email = userObject.getJSONObject("local").getString("email");
+        this.email = userObject.optJSONObject("local").optString("email");
         //this.password = userObject.getJSONObject("local").getString("password");
-        this.username = userObject.getJSONObject("profile").getString("username");
-        this.firstName = userObject.getJSONObject("profile").getString("firstName");
-        this.lastName = userObject.getJSONObject("profile").getString("lastName");
-        this.bio = userObject.getJSONObject("profile").getString("bio");
-        this.pictureUrl = userObject.getJSONObject("profile").getString("pictureUrl");
+        this.username = userObject.optJSONObject("profile").optString("username");
+        this.firstName = userObject.optJSONObject("profile").optString("firstName");
+        this.lastName = userObject.optJSONObject("profile").optString("lastName");
+        this.bio = userObject.optJSONObject("profile").optString("bio");
+        this.pictureUrl = userObject.optJSONObject("profile").optString("pictureUrl");
 
     }
 

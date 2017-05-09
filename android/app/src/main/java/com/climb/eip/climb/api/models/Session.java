@@ -5,7 +5,7 @@ package com.climb.eip.climb.api.models;
  * Created by Younes on 01/03/2017.
  */
 
-public class Session extends HttpResponseBody {
+public class Session {
     private String token;
 
     private String email;

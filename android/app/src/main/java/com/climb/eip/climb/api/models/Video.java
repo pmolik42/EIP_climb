@@ -18,6 +18,7 @@ public class Video {
     private String thumbnailVideo;
     private int likes;
     private int views;
+    private int comments;
     private boolean liked;
     private Date createdAt;
 
@@ -120,5 +121,13 @@ public class Video {
 
     public void setOwnerProfilePicture(String ownerProfilePicture) {
         this.ownerProfilePicture = ownerProfilePicture;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public void setComments(int comments) {
+        this.comments = comments;
     }
 }

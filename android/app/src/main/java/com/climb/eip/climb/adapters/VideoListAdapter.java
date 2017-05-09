@@ -20,6 +20,8 @@ import com.android.volley.toolbox.ImageLoader;
 import com.climb.eip.climb.AppController;
 import com.climb.eip.climb.R;
 import com.climb.eip.climb.api.models.Video;
+import com.climb.eip.climb.utils.AppConstants;
+import com.climb.eip.climb.utils.ClickEventData;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
 
@@ -35,11 +37,13 @@ public class VideoListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<Video> mVideos;
+    private View.OnClickListener mClickListener;
 
 
-    public VideoListAdapter(Context context, List<Video> videos) {
+    public VideoListAdapter(Context context, List<Video> videos, View.OnClickListener clickListener) {
         mContext = context;
         mVideos = videos;
+        mClickListener = clickListener;
     }
 
     @Override
@@ -69,7 +73,7 @@ public class VideoListAdapter extends RecyclerView.Adapter {
         public VideoView videoView;
         public ImageView videoThumbnail;
         public TextView videoLikes;
-        public TextView videoViews;
+        public TextView videoComments;
         public TextView videoTitle;
         public TextView videoDescription;
         public TextView videoCategory;
@@ -87,7 +91,7 @@ public class VideoListAdapter extends RecyclerView.Adapter {
 
             videoView = (VideoView) itemView.findViewById(R.id.videoView);
             videoLikes = (TextView) itemView.findViewById(R.id.videoLikes);
-            videoViews = (TextView) itemView.findViewById(R.id.videoViews);
+            videoComments = (TextView) itemView.findViewById(R.id.videoComments);
             videoTitle = (TextView) itemView.findViewById(R.id.videoTitle);
             videoDescription = (TextView) itemView.findViewById(R.id.videoDescription);
             videoCategory = (TextView) itemView.findViewById(R.id.videoCategory);
@@ -118,7 +122,10 @@ public class VideoListAdapter extends RecyclerView.Adapter {
             videoPlay.setVisibility(View.VISIBLE);
             videoThumbnail.setVisibility(View.VISIBLE);
 
-            Picasso.with(mContext).load(video.getOwnerProfilePicture()).into(userImageView);
+            Picasso.with(mContext).load(video.getOwnerProfilePicture()).fit().into(userImageView);
+            userImageView.setTag(new ClickEventData(AppConstants.USERNAME_CLICK, video.getOwnerUsername()));
+            userImageView.setOnClickListener(mClickListener);
+
             userPictureProgress.setVisibility(View.INVISIBLE);
             userImageView.setVisibility(View.VISIBLE);
 
@@ -159,7 +166,10 @@ public class VideoListAdapter extends RecyclerView.Adapter {
             videoCategory.setText(video.getCategory());
             videoUsername.setText(video.getOwnerUsername());
 
-            videoViews.setText(video.getViews() + " " + mContext.getResources().getString(R.string.views));
+            videoUsername.setTag(new ClickEventData(AppConstants.USERNAME_CLICK, video.getOwnerUsername()));
+            videoUsername.setOnClickListener(mClickListener);
+
+            videoComments.setText(video.getComments() + " " + mContext.getResources().getString(R.string.comments));
             setLikes(video);
         }
     }

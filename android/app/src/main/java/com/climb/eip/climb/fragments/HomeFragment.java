@@ -3,21 +3,20 @@ package com.climb.eip.climb.fragments;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.ListFragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.climb.eip.climb.R;
+import com.climb.eip.climb.activities.LoginActivity;
 import com.climb.eip.climb.activities.NavigationActivity;
 import com.climb.eip.climb.adapters.VideoListAdapter;
 import com.climb.eip.climb.api.models.Video;
@@ -26,11 +25,11 @@ import com.climb.eip.climb.events.GetFailureEvent;
 import com.climb.eip.climb.events.GetHomeEvent;
 import com.climb.eip.climb.events.GetJsonDataEvent;
 import com.climb.eip.climb.manager.ClimbManager;
+import com.climb.eip.climb.utils.Fetcher;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -38,13 +37,12 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
 
 /**
  * Created by Younes on 24/03/2017.
  */
 
-public class HomeFragment extends Fragment {
+public class HomeFragment extends BaseFragment {
 
     @Bind(R.id.progress) ProgressBar mProgressBar;
 
@@ -56,7 +54,6 @@ public class HomeFragment extends Fragment {
     private Bus mBus = BusProvider.getInstance();
     private boolean isLoaded = false;
     private ClimbManager mClimbManager;
-
 
 
     @Override
@@ -104,7 +101,7 @@ public class HomeFragment extends Fragment {
         mRecyclerVideo.setVisibility(View.INVISIBLE);
         mRecyclerVideo.setEnabled(false);
         mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos, this));
 
         return view;
     }
@@ -133,52 +130,60 @@ public class HomeFragment extends Fragment {
         }
     }
 
-    private Video createVideo(JSONObject object) throws JSONException {
-        Video video = new Video(object.getString("title"), object.getString("url"));
+    @Override
+    public String getToolbarTitle() {
+        return "Home";//Fetcher.getInstance().fetchString(mContext, R.string.home);
+    }
+
+    private Video createVideo(JSONObject object) {
+        Video video = new Video(object.optString("title"), object.optString("url"));
 
         video.setLikes(0);
         video.setViews(0);
+        video.setComments(0);
         video.setLiked(false);
-        video.setCategory(object.getString("category"));
-        video.setOwnerUsername(object.getString("ownerUsername"));
-        video.setOwnerProfilePicture(object.getString("ownerProfilePicture").replace("localhost", "10.0.2.2"));
-        video.setThumbnailVideo(object.getString("thumbnailUrl").replace("localhost", "10.0.2.2"));
-        video.setDescription(object.getString("description"));
+        video.setCategory(object.optString("category"));
+        video.setOwnerUsername(object.optString("ownerUsername"));
+        video.setOwnerProfilePicture(object.optString("ownerProfilePicture").replace("localhost", "10.0.2.2"));
+        video.setThumbnailVideo(object.optString("thumbnailUrl").replace("localhost", "10.0.2.2"));
+        video.setDescription(object.optString("description"));
 
         return video;
     }
 
     @Subscribe
-    public void onGetJsonDataEvent(GetJsonDataEvent event) {
-        Log.d("HOME", "ON A RECU QQCHOSE");
+    public void onGetJsonDataEvent(final GetJsonDataEvent event) {
+        Log.d("HOME", "ON A RECU LES DATA");
         JSONObject object = event.getObject();
 
-        try {
-            mVideos.removeAll(mVideos);
-            JSONArray videos = object.getJSONArray("videos");
-            for (int i = 0; i < videos.length(); i++) {
-                if (mVideos.size() < 5)
-                    mVideos.add(createVideo(videos.getJSONObject(i)));
-            }
-            mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-            mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));
-            isLoaded = true;
-        } catch (JSONException e) {
-            e.printStackTrace();
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_LONG).show();
-
+        mVideos.removeAll(mVideos);
+        JSONArray videos = object.optJSONArray("videos");
+        for (int i = 0; i < videos.length(); i++) {
+            mVideos.add(createVideo(videos.optJSONObject(i)));
         }
+        mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos, this));
+        isLoaded = true;
 
         mProgressBar.setVisibility(View.GONE);
         mRecyclerVideo.setVisibility(View.VISIBLE);
     }
 
     @Subscribe
-    public void onGetFailureEvent(GetFailureEvent event) {
-        Log.d("HOME", event.getMessage());
+    public void onGetFailureEvent(final GetFailureEvent event) {
         String message = event.getMessage();
         mProgressBar.setVisibility(View.GONE);
         mRecyclerVideo.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        if (event.getStatusCode() != 200) {
+            SharedPreferences sharedPref = mContext.getSharedPreferences(mContext.getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(mContext.getString(R.string.token), "");
+            editor.commit();
+
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            mContext.startActivity(intent);
+            mListener.finish();
+        } else
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 }

@@ -9,47 +9,118 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="300dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15px"
         android:layout_gravity="center"
-        android:background="@drawable/logo"
-        android:contentDescription="@string/appName"/>
-    
-    <EditText
-        android:id="@+id/emailField"
-        style="@style/EditText.Base"
-        android:layout_width="match_parent"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:drawableLeft="@drawable/ic_email"
-        android:hint="@string/usernameOrEmailPlaceholder" />
+        android:src="@drawable/logo"
+        android:contentDescription="@string/appName" />
 
-    <EditText
-        android:id="@+id/passwordField"
-        style="@style/EditText.Base"
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="40dp"
         android:layout_width="match_parent"
-        android:inputType="textPassword"
-        android:hint="@string/passwordPlaceholder"
-        android:drawableLeft="@drawable/ic_key"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"/>
+        android:layout_height="wrap_content">
 
-    <Button
-        android:id="@+id/loginButton"
-        style="@style/ActionButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/login" />
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/login"/>
 
-    <Button
-        android:id="@+id/registerButton"
-        style="@style/PassiveButton"
+        <EditText
+            android:id="@+id/emailField"
+            style="@style/EditText.Base"
+            android:layout_width="match_parent"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="15dp"
+            android:hint="@string/usernameOrEmailPlaceholder" />
+
+        <EditText
+            android:id="@+id/passwordField"
+            style="@style/EditText.Base"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"
+            android:hint="@string/passwordPlaceholder"
+            android:layout_marginBottom="15dp"/>
+
+        <Button
+            android:id="@+id/loginButton"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:text="@string/login" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/noAccountTextView"
+                style="@style/AuthLink"
+                android:text="@string/noAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/registerLink"
+                style="@style/AuthLinkAction"
+                android:layout_marginStart="5dp"
+                android:text="@string/register"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/forgotPasswordLink"
+            style="@style/AuthLinkAction"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp"
+            android:text="@string/forgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_marginTop="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="15dp"
-        android:text="@string/register" />
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/orSeparator"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:src="@drawable/or"/>
+
+        <Button
+            android:id="@+id/facebookSignupButton"
+            android:text="@string/authFacebook"
+            style="@style/FacebookButton"
+            android:layout_marginTop="25dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
+
+        <Button
+            android:id="@+id/googleSignupButton"
+            android:text="@string/authGoogle"
+            style="@style/GoogleButton"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

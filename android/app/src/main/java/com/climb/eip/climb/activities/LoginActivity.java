@@ -2,12 +2,13 @@ package com.climb.eip.climb.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,15 +18,12 @@ import com.climb.eip.climb.events.GetFailureEvent;
 import com.climb.eip.climb.events.GetLoginEvent;
 import com.climb.eip.climb.events.GetSessionEvent;
 import com.climb.eip.climb.manager.ClimbManager;
-import com.climb.eip.climb.realm.RealmUser;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmAsyncTask;
-import io.realm.RealmQuery;
+
 
 /**
  * Created by Younes on 24/03/2017.
@@ -39,7 +37,12 @@ public class LoginActivity extends AppCompatActivity {
     @Bind(R.id.passwordField) EditText mPasswordField;
 
     @Bind(R.id.loginButton) Button mLoginButton;
-    @Bind(R.id.registerButton) Button mRegisterButton;
+    @Bind(R.id.facebookSignupButton) Button facebookSignupButton;
+    @Bind(R.id.googleSignupButton) Button googleSignupButton;
+
+    @Bind(R.id.noAccountTextView) TextView noAccountTextView;
+    @Bind(R.id.registerLink) TextView registerLink;
+    @Bind(R.id.forgotPasswordLink) TextView forgotPasswordLink;
 
     private String mEmail;
     private String mPassword;
@@ -47,8 +50,6 @@ public class LoginActivity extends AppCompatActivity {
     private ClimbManager mClimbManager;
     private Bus mBus = BusProvider.getInstance();
     private Context mContext;
-    private RealmAsyncTask asyncTask;
-    private Realm realm = Realm.getDefaultInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,16 +61,15 @@ public class LoginActivity extends AppCompatActivity {
 
         mClimbManager = new ClimbManager(this, mBus);
 
-        RealmQuery<RealmUser> query = realm.where(RealmUser.class);
-        RealmUser user = query.findFirst();
-        if (user != null && user.getToken().length() > 0) {
+        String token = getSharedPreferences(getString(R.string.sharedPreference), Context.MODE_PRIVATE).getString(getString(R.string.token), "");
+        if (token.length() > 0) {
             Intent intent = new Intent(mContext, NavigationActivity.class);
             startActivity(intent);
             finish();
         }
 
         this.initLoginButton();
-        this.initRegisterButton();
+        this.initRegisterLink();
 
     }
 
@@ -90,9 +90,6 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (asyncTask != null && !asyncTask.isCancelled()) {
-            asyncTask.cancel();
-        }
     }
 
     private void initLoginButton() {
@@ -100,7 +97,6 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mLoginButton.setEnabled(false);
-                mRegisterButton.setEnabled(false);
                 mEmail = mUsernameField.getText().toString();
                 mPassword = mPasswordField.getText().toString();
                 mBus.post(new GetLoginEvent(mEmail, mPassword));
@@ -108,11 +104,11 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
-    private void initRegisterButton() {
-        this.mRegisterButton.setOnClickListener(new View.OnClickListener() {
+    private void initRegisterLink() {
+        this.registerLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(mContext, RegisterActivity.class);
+                Intent intent = new Intent(mContext, AuthActivity.class);
                 startActivity(intent);
                 finish();
             }
@@ -121,34 +117,27 @@ public class LoginActivity extends AppCompatActivity {
 
     @Subscribe
     public void onGetSessionEvent(final GetSessionEvent event) {
-        asyncTask = realm.executeTransactionAsync(new Realm.Transaction() {
-            @Override
-            public void execute(Realm realm) {
-                RealmUser user = realm.createObject(RealmUser.class);
-                user.setEmail(event.getUser().getEmail());
-                user.setUsername(event.getUser().getUsername());
-                user.setPassword(event.getUser().getPassword());
-                user.setToken(event.getToken());
-            }
-        }, new Realm.Transaction.OnSuccess() {
-            @Override
-            public void onSuccess() {
-                Intent intent = new Intent(mContext, NavigationActivity.class);
-                startActivity(intent);
-                finish();
-            }
-        }, new Realm.Transaction.OnError() {
-            @Override
-            public void onError(Throwable error) {
+        String username = event.getUser().getUsername();
+        String token = event.getToken();
+        Log.d(TAG, "username : " + username);
 
-            }
-        });
+
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.token), token);
+        editor.putString(getString(R.string.username), username);
+
+        editor.commit();
+
+        Intent intent = new Intent(mContext, NavigationActivity.class);
+        startActivity(intent);
+        finish();
+
     }
 
     @Subscribe
     public void onGetFailureEvent(GetFailureEvent event) {
         mLoginButton.setEnabled(true);
-        mRegisterButton.setEnabled(true);
         Toast.makeText(this, event.getMessage(), Toast.LENGTH_SHORT).show();
     }
 }

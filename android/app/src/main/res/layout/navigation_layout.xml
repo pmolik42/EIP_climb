@@ -19,6 +19,13 @@
             style="@style/ToolbarTheme"
             android:background="@color/colorPrimary">
 
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="@drawable/ic_back"
+                android:visibility="gone"
+                android:background="#0000"/>
 
             <TextView
                 android:id="@+id/toolbarTitle"
@@ -27,7 +34,7 @@
                 android:text="@string/appName"
                 android:layout_centerVertical="true"
                 android:layout_gravity="center"
-                android:textColor="@color/colorAccent"
+                android:textColor="@color/white"
                 android:textStyle="bold"
                 android:textSize="20sp"
                 />

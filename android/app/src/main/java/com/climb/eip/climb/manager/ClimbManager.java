@@ -10,10 +10,10 @@ import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.climb.eip.climb.AppController;
+import com.climb.eip.climb.R;
 import com.climb.eip.climb.activities.LoginActivity;
 import com.climb.eip.climb.activities.RegisterActivity;
 import com.climb.eip.climb.api.ClimbClientUrl;
-import com.climb.eip.climb.api.models.Session;
 import com.climb.eip.climb.events.GetFailureEvent;
 import com.climb.eip.climb.events.GetHomeEvent;
 import com.climb.eip.climb.events.GetJsonDataEvent;
@@ -22,7 +22,6 @@ import com.climb.eip.climb.events.GetProfileEvent;
 import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.events.GetRegisterEvent;
 import com.climb.eip.climb.events.GetSessionEvent;
-import com.climb.eip.climb.realm.RealmUser;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -31,9 +30,6 @@ import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
-
-import io.realm.Realm;
-import io.realm.RealmQuery;
 
 
 /**
@@ -48,7 +44,6 @@ public class ClimbManager {
     private Context mContext;
     private Bus mBus;
     private ClimbClientUrl sClimbClient;
-    private Realm realm = Realm.getDefaultInstance();
 
 
     public ClimbManager(Context context, Bus bus) {
@@ -123,7 +118,6 @@ public class ClimbManager {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
                         try {
                             if (response.getBoolean("success") == true) {
                                 mBus.post(new GetSessionEvent(response));
@@ -145,12 +139,12 @@ public class ClimbManager {
     @Subscribe
     public void onGetProfileEvent(final GetProfileEvent event) {
         final String username = event.getUsername();
+        Log.d(TAG, "username : " + username);
 
         JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.profileUrl(username),
                 null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
                         try {
                             if (response.getBoolean("success") == true) {
                                 mBus.post(new GetJsonDataEvent(response));
@@ -174,7 +168,6 @@ public class ClimbManager {
                 null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
                         try {
                             if (response.getBoolean("success") == true) {
                                 mBus.post(new GetJsonDataEvent(response));
@@ -199,7 +192,6 @@ public class ClimbManager {
                 null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
                         try {
                             if (response.getBoolean("success") == true) {
                                 mBus.post(new GetJsonDataEvent(response));
@@ -218,9 +210,8 @@ public class ClimbManager {
 
     private JsonObjectRequest buildRequest(int method, final String url, JSONObject obj, Response.Listener<JSONObject> responseListener) {
 
-        RealmQuery<RealmUser> query = realm.where(RealmUser.class);
-        final RealmUser user = query.findFirst();
-        final String token = user != null ? user.getToken() : null;
+        final String token = mContext.getSharedPreferences(mContext.getString(R.string.sharedPreference), Context.MODE_PRIVATE)
+                            .getString(mContext.getString(R.string.token), "");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(method,
                 url, obj,
@@ -230,13 +221,13 @@ public class ClimbManager {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                mBus.post(new GetFailureEvent(error.getLocalizedMessage()));
+                mBus.post(new GetFailureEvent(error.getMessage(), error.networkResponse.statusCode));
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
                 Map<String, String>  params = new HashMap<String, String>();
-                if (token != null) {
+                if (token.length() > 0) {
                     params.put("x-access-token", token);
                 }
 

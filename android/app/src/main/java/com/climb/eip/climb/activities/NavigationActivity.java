@@ -1,30 +1,35 @@
 package com.climb.eip.climb.activities;
 
 import android.content.Context;
-import android.graphics.Typeface;
+import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigation;
 import com.aurelhubert.ahbottomnavigation.AHBottomNavigationItem;
 import com.climb.eip.climb.R;
-import com.climb.eip.climb.bus.BusProvider;
+import com.climb.eip.climb.fragments.BaseFragment;
+import com.climb.eip.climb.fragments.DiscoverFragment;
 import com.climb.eip.climb.fragments.HomeFragment;
+import com.climb.eip.climb.fragments.NotificationsFragment;
 import com.climb.eip.climb.fragments.ProfileFragment;
-import com.climb.eip.climb.manager.ClimbManager;
-import com.climb.eip.climb.realm.RealmUser;
+import com.climb.eip.climb.utils.AppConstants;
+import com.climb.eip.climb.utils.ClickEventData;
 import com.climb.eip.climb.utils.Fetcher;
-import com.squareup.otto.Bus;
+
+import java.util.HashMap;
+import java.util.Stack;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmQuery;
 
 /**
  * Created by Younes on 24/03/2017.
@@ -32,26 +37,20 @@ import io.realm.RealmQuery;
 
 public class NavigationActivity extends AppCompatActivity {
 
-    private static final int HOME_FRAGMENT = 0;
-    //private static final int GOALS_FRAGMENT = 1;
-    //private static final int CREATE_GOAL_FRAGMENT = 2;
-    //private static final int ACHIEVEMENTS_FRAGMENT = 3;
-    private static final int PROFILE_FRAGMENT = 1;
-    private static final int NUMBER_FRAGMENTS = 2;
+    public static final String TAG = "NavigationActivity";
 
     @Bind(R.id.toolbar) Toolbar mToolbar;
     @Bind(R.id.frame) FrameLayout mFrame;
     @Bind(R.id.bottomNavigation) AHBottomNavigation mNavigation;
     @Bind(R.id.toolbarTitle) TextView mTitleBar;
+    @Bind(R.id.backButton) ImageButton mBackButton;
 
-    private Fragment[] fragments = new Fragment[NUMBER_FRAGMENTS];
-    private String[] navigationItemText = new String[NUMBER_FRAGMENTS];
-    private static final String appName = "Climb";
+    private HashMap<Integer, Stack<BaseFragment>> mStacks;
+    private BaseFragment[] fragments = new BaseFragment[AppConstants.NUMBER_FRAGMENTS];
+    private String[] navigationItemText = new String[AppConstants.NUMBER_FRAGMENTS];
 
     private int mPosition;
-    private Realm realm = Realm.getDefaultInstance();
     private Context mContext;
-    private Bus mBus = BusProvider.getInstance();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,15 +59,28 @@ public class NavigationActivity extends AppCompatActivity {
 
         ButterKnife.bind(this);
         mContext = this;
-
         mPosition = 0;
+
+        mStacks = new HashMap<Integer, Stack<BaseFragment>>();
+        mStacks.put(AppConstants.HOME_FRAGMENT, new Stack<BaseFragment>());
+        mStacks.put(AppConstants.DISCOVER_FRAGMENT, new Stack<BaseFragment>());
+        mStacks.put(AppConstants.NOTIFICATION_FRAGMENT, new Stack<BaseFragment>());
+        mStacks.put(AppConstants.PROFILE_FRAGMENT, new Stack<BaseFragment>());
 
         this.initToolbar();
         this.initItemText();
         this.initNavigationBar();
         this.initFragments();
 
-        this.handleFragmentNavigation(R.id.frame, fragments[HOME_FRAGMENT], mPosition);
+        mBackButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                popFragments();
+            }
+        });
+
+        pushFragments(mPosition, fragments[mPosition], false, true, mPosition);
+        mTitleBar.setText(navigationItemText[mPosition]);
 
     }
 
@@ -76,7 +88,7 @@ public class NavigationActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         mNavigation.setCurrentItem(mPosition);
-        this.handleFragmentNavigation(R.id.frame, fragments[mPosition], mPosition);
+        pushFragments(mPosition, mStacks.get(mPosition).lastElement(), false, false, mPosition);
     }
 
     @Override
@@ -87,22 +99,26 @@ public class NavigationActivity extends AppCompatActivity {
     private void initNavigationBar() {
         this.initIcons();
         mNavigation.setCurrentItem(mPosition);
-        mTitleBar.setText(navigationItemText[mPosition]);
 
         mNavigation.setDefaultBackgroundColor(Fetcher.fetchColor(this, R.color.white));
-        mNavigation.setAccentColor(Fetcher.fetchColor(this, R.color.colorPrimaryDark));
+        mNavigation.setAccentColor(Fetcher.fetchColor(this, R.color.colorAccent));
         mNavigation.setTitleState(AHBottomNavigation.TitleState.ALWAYS_SHOW);
 
         mNavigation.setOnTabSelectedListener(new AHBottomNavigation.OnTabSelectedListener() {
             @Override
             public boolean onTabSelected(int position, boolean wasSelected) {
-                if (position != mPosition) {
+                if (position != mPosition && position != 2) {
 
-                    mTitleBar.setText(navigationItemText[position]);
-                    handleFragmentNavigation(R.id.frame, fragments[position], mPosition);
+                    if (position > 2) position -= 1;
+                    if(mStacks.get(position).size() == 0) {
+                        pushFragments(position, fragments[position], false, true, mPosition);
+                    } else {
+                        pushFragments(position, mStacks.get(position).lastElement(), false, false, mPosition);
+                    }
+                    Log.d(TAG, mStacks.get(position).lastElement().getToolbarTitle());
+                    mTitleBar.setText(mStacks.get(position).lastElement().getToolbarTitle());
+                    mPosition = position;
                 }
-
-                mPosition = position;
 
                 return true;
             }
@@ -110,36 +126,34 @@ public class NavigationActivity extends AppCompatActivity {
     }
 
     private void initIcons() {
-        AHBottomNavigationItem homeItem = new AHBottomNavigationItem(navigationItemText[HOME_FRAGMENT], R.drawable.ic_home);
-        //AHBottomNavigationItem goalsItem = new AHBottomNavigationItem(navigationItemText[GOALS_FRAGMENT], R.drawable.ic_goals);
-        //AHBottomNavigationItem createItem = new AHBottomNavigationItem("", R.drawable.ic_create);
-        //AHBottomNavigationItem achievementsItem = new AHBottomNavigationItem(navigationItemText[ACHIEVEMENTS_FRAGMENT], R.drawable.ic_success);
-        AHBottomNavigationItem settingsItem = new AHBottomNavigationItem(navigationItemText[PROFILE_FRAGMENT], R.drawable.ic_profile);
+        AHBottomNavigationItem homeItem = new AHBottomNavigationItem(navigationItemText[AppConstants.HOME_FRAGMENT], R.drawable.ic_home);
+        AHBottomNavigationItem discoverItem = new AHBottomNavigationItem(navigationItemText[AppConstants.DISCOVER_FRAGMENT], R.drawable.ic_search);
+        AHBottomNavigationItem createItem = new AHBottomNavigationItem("", R.drawable.ic_video);
+        AHBottomNavigationItem notificationsItem = new AHBottomNavigationItem(navigationItemText[AppConstants.NOTIFICATION_FRAGMENT], R.drawable.ic_notification);
+        AHBottomNavigationItem profileItem = new AHBottomNavigationItem(navigationItemText[AppConstants.PROFILE_FRAGMENT], R.drawable.ic_profile);
 
         mNavigation.addItem(homeItem);
-        //mNavigation.addItem(goalsItem);
-        //mNavigation.addItem(createItem);
-        //mNavigation.addItem(achievementsItem);
-        mNavigation.addItem(settingsItem);
+        mNavigation.addItem(discoverItem);
+        mNavigation.addItem(createItem);
+        mNavigation.addItem(notificationsItem);
+        mNavigation.addItem(profileItem);
     }
 
     private void initFragments() {
-        RealmQuery<RealmUser> query = realm.where(RealmUser.class);
-        RealmUser user = query.findFirst();
-        fragments[HOME_FRAGMENT] = new HomeFragment();
-        //fragments[GOALS_FRAGMENT] = new GoalsFragment();
-        //fragments[CREATE_GOAL_FRAGMENT] = new CreateGoalFragment();
-        //fragments[ACHIEVEMENTS_FRAGMENT] = new AchievementsFragment();
-        fragments[PROFILE_FRAGMENT] = new ProfileFragment();
-        ((ProfileFragment)fragments[PROFILE_FRAGMENT]).setUsername(user.getUsername());
+        String username = getSharedPreferences(getString(R.string.sharedPreference), Context.MODE_PRIVATE).getString(getString(R.string.username), "");
+        Log.d("NAVIGATION ACTIVITY", "username : " + username);
+        fragments[AppConstants.HOME_FRAGMENT] = new HomeFragment();
+        fragments[AppConstants.DISCOVER_FRAGMENT] = new DiscoverFragment();
+        fragments[AppConstants.NOTIFICATION_FRAGMENT] = new NotificationsFragment();
+        fragments[AppConstants.PROFILE_FRAGMENT] = new ProfileFragment();
+        ((ProfileFragment)fragments[AppConstants.PROFILE_FRAGMENT]).setUsername(username);
     }
 
     private void initItemText() {
-        navigationItemText[HOME_FRAGMENT] = Fetcher.fetchString(this, R.string.home);
-        //navigationItemText[GOALS_FRAGMENT] = Fetcher.fetchString(this, R.string.goals);
-        //navigationItemText[CREATE_GOAL_FRAGMENT] = Fetcher.fetchString(this, R.string.create);;
-        //navigationItemText[ACHIEVEMENTS_FRAGMENT] = Fetcher.fetchString(this, R.string.achievements);
-        navigationItemText[PROFILE_FRAGMENT] = Fetcher.fetchString(this, R.string.profile);
+        navigationItemText[AppConstants.HOME_FRAGMENT] = Fetcher.fetchString(this, R.string.home);
+        navigationItemText[AppConstants.DISCOVER_FRAGMENT] = Fetcher.fetchString(this, R.string.discover);
+        navigationItemText[AppConstants.NOTIFICATION_FRAGMENT] = Fetcher.fetchString(this, R.string.notifications);
+        navigationItemText[AppConstants.PROFILE_FRAGMENT] = Fetcher.fetchString(this, R.string.profile);
     }
 
     private void initToolbar() {
@@ -147,24 +161,85 @@ public class NavigationActivity extends AppCompatActivity {
         mTitleBar.setText(navigationItemText[mPosition]);
     }
 
-    private void handleFragmentNavigation(int id, Fragment fragment, int oldPosition) {
-        FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
+    public void pushFragments(Integer position, BaseFragment fragment, boolean shouldAnimate, boolean shouldAdd, int oldPosition){
 
-        if (fragment != fragments[oldPosition])
-            transaction.hide(fragments[oldPosition]);
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        if(shouldAnimate)
+            ft.setCustomAnimations(R.anim.enter, R.anim.exit);
 
-        if (fragment.isAdded()) {
-            transaction.show(fragment);
-        } else {
-            transaction.add(id, fragment);
+        if(shouldAdd)
+            mStacks.get(position).push(fragment);
+
+        if (mStacks.get(position).size() == 1)
+            mBackButton.setVisibility(View.GONE);
+        else
+            mBackButton.setVisibility(View.VISIBLE);
+
+        if (fragment != mStacks.get(oldPosition).lastElement() ) {
+            ft.hide(mStacks.get(oldPosition).lastElement());
+        } else if (oldPosition == position && mStacks.get(oldPosition).size() > 1) {
+            ft.hide(mStacks.get(oldPosition).get(mStacks.get(oldPosition).size() - 2));
         }
 
-        transaction.commit();
+        if (fragment.isAdded()) {
+            ft.show(fragment);
+        } else {
+            ft.add(R.id.frame, fragment);
+        }
+
+        ft.commit();
     }
 
-    public void setToolbarTitle(String title) {
-        mTitleBar.setText(title);
+    public void popFragments() {
+        BaseFragment fragment = mStacks.get(mPosition).elementAt(mStacks.get(mPosition).size() - 2);
+
+        FragmentManager manager = getSupportFragmentManager();
+        FragmentTransaction ft = manager.beginTransaction();
+        ft.remove(mStacks.get(mPosition).pop());
+        ft.setCustomAnimations(R.anim.pop_exit, R.anim.pop_enter);
+        if (mStacks.get(mPosition).size() == 1) {
+            mBackButton.setVisibility(View.GONE);
+        }
+        ft.show(fragment);
+        mTitleBar.setText(fragment.getToolbarTitle());
+        ft.commit();
     }
 
+    public void setCurrentTab(int val){
+        mNavigation.setCurrentItem(val, true);
+    }
+
+    @Override
+    public void onBackPressed() {
+        if(mStacks.get(mPosition).size() == 1){
+            finish();
+            return;
+        }
+
+        mStacks.get(mPosition).lastElement().onBackPressed();
+
+        popFragments();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if(mStacks.get(mPosition).size() == 0){
+            return;
+        }
+
+        mStacks.get(mPosition).lastElement().onActivityResult(requestCode, resultCode, data);
+    }
+
+    public void pushNewFragment(View view) {
+        if (view.getTag() != null && ((ClickEventData)view.getTag()).getClickEvent() == AppConstants.USERNAME_CLICK) {
+            String username = ((ClickEventData)view.getTag()).getData();
+            ProfileFragment fragment = new ProfileFragment();
+            fragment.setUsername(username);
+            pushFragments(mPosition, fragment, true, true, mPosition);
+            mTitleBar.setText(fragment.getToolbarTitle());
+            mBackButton.setVisibility(View.VISIBLE);
+        }
+    }
 
 }

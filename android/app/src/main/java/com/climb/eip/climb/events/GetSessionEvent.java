@@ -17,12 +17,12 @@ public class GetSessionEvent {
     private User mUser;
     private String mMessage;
 
-    public GetSessionEvent(JSONObject resultObject) throws JSONException {
+    public GetSessionEvent(JSONObject resultObject) {
         this.mSessionObject = resultObject;
 
-        this.mToken = resultObject.getString("token");
-        this.mMessage = resultObject.getString("message");
-        this.mUser = new User(resultObject.getJSONObject("user"));
+        this.mToken = resultObject.optString("token");
+        this.mMessage = resultObject.optString("message");
+        this.mUser = new User(resultObject.optJSONObject("user"));
 
     }
 

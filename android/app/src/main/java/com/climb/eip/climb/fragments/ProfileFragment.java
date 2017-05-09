@@ -1,17 +1,21 @@
 package com.climb.eip.climb.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
@@ -27,18 +31,16 @@ import com.climb.eip.climb.api.models.User;
 import com.climb.eip.climb.api.models.Video;
 import com.climb.eip.climb.bus.BusProvider;
 import com.climb.eip.climb.events.GetFailureEvent;
-import com.climb.eip.climb.events.GetHomeEvent;
 import com.climb.eip.climb.events.GetJsonDataEvent;
 import com.climb.eip.climb.events.GetProfileEvent;
 import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.manager.ClimbManager;
-import com.climb.eip.climb.realm.RealmUser;
+import com.climb.eip.climb.utils.Fetcher;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -46,28 +48,33 @@ import java.util.List;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import io.realm.Realm;
-import io.realm.RealmAsyncTask;
-import io.realm.RealmQuery;
 
 /**
  * Created by Younes on 24/03/2017.
  */
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends BaseFragment {
 
     @Bind(R.id.followers) TextView mFollowers;
     @Bind(R.id.following) TextView mFollowing;
+    @Bind(R.id.battles) TextView mBattles;
+
     @Bind(R.id.profileBio) TextView mBio;
     @Bind(R.id.profileName) TextView mName;
-    @Bind(R.id.numberOfVideos) TextView mNumberOfVideos;
 
     @Bind(R.id.profilePicture) ImageView mProfilePicture;
 
     @Bind(R.id.profileContent) RelativeLayout mProfileContent;
 
-    @Bind(R.id.logout) Button mLogoutButton;
+    @Bind(R.id.videoTab) Button mVideosTabButton;
+    @Bind(R.id.battleTab) Button mBattlesTabButton;
+    @Bind(R.id.bookTab) Button mBookTabButton;
+    @Bind(R.id.optionsButton) ImageView mOptions;
     @Bind(R.id.followButton) Button mFollowButton;
+    @Bind(R.id.unfollowButton) Button mUnfollowButton;
+
+    @Bind(R.id.listButton) ImageView mListButton;
+    @Bind(R.id.gridButton) ImageView mGridButton;
 
     @Bind(R.id.progress) ProgressBar mProgressBar;
 
@@ -76,24 +83,21 @@ public class ProfileFragment extends Fragment {
     private Context mContext;
     private NavigationActivity mListener;
     private List<Video> mVideos = new ArrayList<Video>();
-    private User user;
     private String username;
     private Bus mBus = BusProvider.getInstance();
     private ClimbManager mClimbManager;
     private boolean isLoaded = false;
     private String pictureUrl;
-    private RealmAsyncTask asyncTask;
-    private Realm realm = Realm.getDefaultInstance();
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
         if (context instanceof Activity){
             this.mListener = (NavigationActivity) context;
+            mContext = context;
             mClimbManager = new ClimbManager(mContext, mBus);
             mBus.register(this);
             mBus.register(mClimbManager);
-            mContext = context;
         }
     }
 
@@ -121,10 +125,18 @@ public class ProfileFragment extends Fragment {
 
         mFollowing.setVisibility(View.INVISIBLE);
         mFollowers.setVisibility(View.INVISIBLE);
-        mFollowButton.setVisibility(View.INVISIBLE);
+        mBattles.setVisibility(View.INVISIBLE);
+
         mName.setVisibility(View.INVISIBLE);
         mBio.setVisibility(View.INVISIBLE);
-        mNumberOfVideos.setVisibility(View.INVISIBLE);
+
+        mVideosTabButton.setEnabled(true);
+        mBattlesTabButton.setEnabled(false);
+        mBookTabButton.setEnabled(false);
+        mListButton.setEnabled(true);
+        mGridButton.setEnabled(false);
+
+
         mRecyclerVideo.setVisibility(View.INVISIBLE);
         mProgressBar.setVisibility(View.VISIBLE);
 
@@ -139,48 +151,71 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mBus.unregister(this);
+        mBus.unregister(mClimbManager);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initLogoutButton();
+        Log.d("PROFILE", "username : " + username);
         if (!isLoaded) {
             mBus.post(new GetProfileEvent(username));
         }
-        mListener.setToolbarTitle(username);
         mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, new ArrayList<Video>()));
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, new ArrayList<Video>(), this));
     }
 
-    private void initLogoutButton() {
-        mVideos.removeAll(mVideos);
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public String getToolbarTitle() {
+        return username;
+    }
+
+    private void initDialogOptions() {
+        final Dialog dialog = new Dialog(mContext);
+        dialog.setContentView(R.layout.profile_options_dialog_box);
+        //dialog.setTitle("Title...");
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(wlp);
+
+        TextView logoutLink = (TextView) dialog.findViewById(R.id.logoutLink);
+        TextView cancelLink = (TextView) dialog.findViewById(R.id.cancelLink);
+
+        logoutLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                final RealmQuery<RealmUser> query = realm.where(RealmUser.class);
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
-                        // remove single match
-                        query.findFirst().deleteFromRealm();
-                        Intent intent = new Intent(mContext, LoginActivity.class);
-                        startActivity(intent);
-                        mListener.finish();
+                SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.token), "");
+                editor.commit();
 
-                    }
-                });
-
-
+                Intent intent = new Intent(mContext, LoginActivity.class);
+                mListener.startActivity(intent);
+                mListener.finish();
             }
         });
+        cancelLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
-    private Video createVideo(JSONObject object) {
+    private Video createVideo(JSONObject object, String username, String pictureUrl) {
         Video video = new Video(object.optString("title"), object.optString("url"));
 
         video.setLikes(0);
         video.setViews(0);
+        video.setComments(0);
         video.setLiked(false);
         video.setCategory(object.optString("category"));
         video.setOwnerUsername(username);
@@ -196,16 +231,14 @@ public class ProfileFragment extends Fragment {
         this.username = username;
     }
 
-    private void onVideosReceived(JSONArray videos) {
+    private void onVideosReceived(JSONArray videos, String username, String pictureUrl) {
         for (int i = 0; i < videos.length(); i++) {
-            Video video = createVideo(videos.optJSONObject(i));
+            Video video = createVideo(videos.optJSONObject(i), username, pictureUrl);
             if (mVideos.size() < 5)
                 mVideos.add(video);
         }
 
-        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));
-        mNumberOfVideos.setText(videos.length() + " Videos");
-        mNumberOfVideos.setVisibility(View.VISIBLE);
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos, this));
         mRecyclerVideo.setVisibility(View.VISIBLE);
         mProgressBar.setVisibility(View.GONE);
 
@@ -215,10 +248,29 @@ public class ProfileFragment extends Fragment {
     private void onProfileReceived(JSONObject object) {
         JSONObject profile = object.optJSONObject("user").optJSONObject("profile");
 
-        mFollowers.setText(object.optString("followers") + " Followers");
-        mFollowing.setText(object.optString("following") + " Following");
+        if (object.optBoolean("isOwner")) {
+            mOptions.setVisibility(View.VISIBLE);
+            mOptions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    initDialogOptions();
+                }
+            });
+        } else {
+            if (object.optBoolean("isFollowing")) {
+                mUnfollowButton.setVisibility(View.VISIBLE);
+            } else {
+                mFollowButton.setVisibility(View.VISIBLE);
+            }
+        }
+
+        mFollowers.setText(object.optString("followers") + "\nFollowers");
+        mFollowing.setText(object.optString("following") + "\nFollowing");
+        mBattles.setText("0\nBattles");
+
         mFollowing.setVisibility(View.VISIBLE);
         mFollowers.setVisibility(View.VISIBLE);
+        mBattles.setVisibility(View.VISIBLE);
 
         mName.setText(profile.optString("firstName") + " " + profile.optString("lastName"));
         mBio.setText(profile.optString("bio"));
@@ -232,13 +284,13 @@ public class ProfileFragment extends Fragment {
     }
 
     @Subscribe
-    public void onGetJsonDataEvent(GetJsonDataEvent event) {
-        Log.d("HOME", "ON A RECU QQCHOSE");
+    public void onGetJsonDataEvent(final GetJsonDataEvent event) {
+        Log.d("PROFILE", "ON A RECU LES DATA");
         JSONObject object = event.getObject();
 
         if (object.optJSONArray("videos") != null) {
             mVideos.removeAll(mVideos);
-            onVideosReceived(object.optJSONArray("videos"));
+            onVideosReceived(object.optJSONArray("videos"), object.optString("username"), object.optString("userProfilePicture"));
         } else {
             onProfileReceived(object);
             mBus.post(new GetProfileVideosEvent(username));
@@ -246,11 +298,21 @@ public class ProfileFragment extends Fragment {
     }
 
     @Subscribe
-    public void onGetFailureEvent(GetFailureEvent event) {
+    public void onGetFailureEvent(final GetFailureEvent event) {
         Log.d("PROFILE", event.getMessage());
         String message = event.getMessage();
         mProgressBar.setVisibility(View.GONE);
         mRecyclerVideo.setVisibility(View.VISIBLE);
-        Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
+        if (event.getStatusCode() != 200) {
+            SharedPreferences sharedPref = mContext.getSharedPreferences(mContext.getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(mContext.getString(R.string.token), "");
+            editor.commit();
+
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            mContext.startActivity(intent);
+            mListener.finish();
+        } else
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 }
