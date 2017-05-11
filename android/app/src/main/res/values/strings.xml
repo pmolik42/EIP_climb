@@ -17,20 +17,35 @@
     <string name="register">Register</string>
     <string name="logout">Logout</string>
     <string name="follow">Follow</string>
+    <string name="authSignup">Signup using email</string>
+    <string name="authFacebook">Connect with Facebook</string>
+    <string name="authGoogle">Connect with Google+</string>
+    <string name="videos">Videos</string>
+    <string name="battles">Battles</string>
+    <string name="book">Book</string>
+    <string name="unfollow">Unfollow</string>
+
 
     <!-- ================================ -->
 
     <!-- Navigation Bar -->
 
     <string name="home">Home</string>
+    <string name="discover">Discover</string>
+    <string name="video"></string>
+    <string name="notifications">Notifications</string>
     <string name="profile">Profile</string>
 
     <!-- ==================================== -->
 
 
-    <string name="noAccount">No account yet ?</string>
-
-    <string name="haveAccount">Already registered ?</string>
+    <string name="noAccount">Don\'t have an account?</string>
+    <string name="forgotPassword">Forgot your password?</string>
+    <string name="haveAccount">Already have an account?</string>
+    <string name="createAccountTextView">Create your account</string>
+    <string name="cancel">Cancel</string>
+    <string name="editProfile">Edit profile</string>
+    <string name="settings">Settings</string>
 
 
     <!-- Labels -->
@@ -38,6 +53,7 @@
     <string name="categoryLabel">Category :</string>
     <string name="likes">Likes</string>
     <string name="views">Views</string>
+    <string name="comments">Comments</string>
 
 
     <!-- =========================================== -->
@@ -45,14 +61,20 @@
     <!-- Sample Data Text -->
     <string name="sampleFollowers">76 Followers</string>
     <string name="sampleFollowing">42 Following</string>
+    <string name="sampleBattles">13 Battles</string>
     <string name="sampleName">Younes Iddahamou</string>
-    <string name="sampleBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</string>
+    <string name="sampleBio">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam.</string>
     <string name="sampleUsername">Nescah</string>
     <string name="sampleVideoCategory">Dance</string>
     <string name="sampleVideoTitle">Freestyle danse sur Bad and Boujee</string>
     <string name="sampleVideoLikes">728 Likes</string>
     <string name="sampleVideoViews">1367 Views</string>
+    <string name="sampleVideoComments">10 Comments</string>
     <string name="sampleNumberOfVideos">5 Videos</string>
     <!-- =============================================== -->
+
+    <string name="sharedPreference">climb</string>
+    <string name="token">token</string>
+    <string name="username">username</string>
 
 </resources>

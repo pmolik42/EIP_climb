@@ -31,4 +31,12 @@ public class ClimbClientUrl {
     public String profileUrl(String username) {
         return BASE_URL + "profile/" + username;
     }
+
+    public String homeUrl() {
+        return BASE_URL + "videos/feed";
+    }
+
+    public String profileVideos(String username) {
+        return BASE_URL + "profile/" + username + "/videos";
+    }
 }

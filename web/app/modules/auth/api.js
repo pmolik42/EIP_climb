@@ -30,7 +30,7 @@ const authApiRoutes = (app) => {
           var token = jwt.sign(user, app.get('secret'), {
             expiresIn: '7d' // expires in 7 days
           });
-          
+
 
           // return the information including token as JSON
           res.json({

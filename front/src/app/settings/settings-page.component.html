@@ -1,0 +1,21 @@
+<div class="container">
+
+  <div class="row">
+    <div class="col-xs-12 col-sm-3">
+      <div class="layout-form">
+        <ul style="padding-left: 0;">
+          <li class=""><a href="/settings">Vue d'ensemble</a></li>
+          <li class=""><a href="">Profil</a></li>
+          <li class=""><a href="">Comptes liés</a></li>
+          <li class=""><a href="">Confidentialité</a></li>
+          <li class=""><a href="">Notifications</a></li>
+          <li class=""><a href="">Lecture</a></li>
+          <li class=""><button (click)="logout()">Déconnexion</button></li>
+        </ul>
+      </div>
+    </div>
+    <div class="col-xs-12 col-sm-9">
+      <router-outlet></router-outlet>
+    </div>
+  </div><!--/row-->
+</div><!--/.container-->

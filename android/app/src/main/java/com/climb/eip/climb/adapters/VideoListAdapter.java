@@ -9,12 +9,21 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageLoader;
+import com.climb.eip.climb.AppController;
 import com.climb.eip.climb.R;
 import com.climb.eip.climb.api.models.Video;
+import com.climb.eip.climb.utils.AppConstants;
+import com.climb.eip.climb.utils.ClickEventData;
+import com.mikhaellopez.circularimageview.CircularImageView;
+import com.squareup.picasso.Picasso;
 
 import org.w3c.dom.Text;
 
@@ -28,11 +37,13 @@ public class VideoListAdapter extends RecyclerView.Adapter {
 
     private Context mContext;
     private List<Video> mVideos;
+    private View.OnClickListener mClickListener;
 
 
-    public VideoListAdapter(Context context, List<Video> videos) {
+    public VideoListAdapter(Context context, List<Video> videos, View.OnClickListener clickListener) {
         mContext = context;
         mVideos = videos;
+        mClickListener = clickListener;
     }
 
     @Override
@@ -62,34 +73,61 @@ public class VideoListAdapter extends RecyclerView.Adapter {
         public VideoView videoView;
         public ImageView videoThumbnail;
         public TextView videoLikes;
-        public TextView videoViews;
+        public TextView videoComments;
         public TextView videoTitle;
         public TextView videoDescription;
         public TextView videoCategory;
         public TextView videoUsername;
+        public CircularImageView userImageView;
         public ImageView videoLikeButton;
-
+        public ProgressBar videoPictureProgress;
+        public ProgressBar userPictureProgress;
+        public ImageButton videoPlay;
 
         public VideoHolder(View itemView) {
             super(itemView);
 
+            videoPlay = (ImageButton) itemView.findViewById(R.id.playVideoButton);
+
             videoView = (VideoView) itemView.findViewById(R.id.videoView);
             videoLikes = (TextView) itemView.findViewById(R.id.videoLikes);
-            videoViews = (TextView) itemView.findViewById(R.id.videoViews);
+            videoComments = (TextView) itemView.findViewById(R.id.videoComments);
             videoTitle = (TextView) itemView.findViewById(R.id.videoTitle);
             videoDescription = (TextView) itemView.findViewById(R.id.videoDescription);
             videoCategory = (TextView) itemView.findViewById(R.id.videoCategory);
             videoUsername = (TextView) itemView.findViewById(R.id.userUsername);
 
+            videoPictureProgress = (ProgressBar) itemView.findViewById(R.id.videoImageProgress);
+            userPictureProgress = (ProgressBar) itemView.findViewById(R.id.userImageProgress);
 
             videoThumbnail = (ImageView) itemView.findViewById(R.id.userVideoThumbnail);
             videoLikeButton = (ImageView) itemView.findViewById(R.id.likeButton);
+            userImageView = (CircularImageView) itemView.findViewById(R.id.userProfilePicture);
 
         }
 
         public void bindViewHolder(Video video, int position) {
             setTextViews(video);
             setLikeButton(video, position);
+            videoPlay.setVisibility(View.INVISIBLE);
+            videoPlay.setEnabled(false);
+            videoPictureProgress.setVisibility(View.VISIBLE);
+            userPictureProgress.setVisibility(View.VISIBLE);
+            videoThumbnail.setVisibility(View.INVISIBLE);
+            userImageView.setVisibility(View.INVISIBLE);
+
+            Picasso.with(mContext).load(video.getThumbnailVideo()).into(videoThumbnail);
+            videoPictureProgress.setVisibility(View.GONE);
+            videoPlay.setEnabled(true);
+            videoPlay.setVisibility(View.VISIBLE);
+            videoThumbnail.setVisibility(View.VISIBLE);
+
+            Picasso.with(mContext).load(video.getOwnerProfilePicture()).fit().into(userImageView);
+            userImageView.setTag(new ClickEventData(AppConstants.USERNAME_CLICK, video.getOwnerUsername()));
+            userImageView.setOnClickListener(mClickListener);
+
+            userPictureProgress.setVisibility(View.INVISIBLE);
+            userImageView.setVisibility(View.VISIBLE);
 
         }
 
@@ -128,7 +166,10 @@ public class VideoListAdapter extends RecyclerView.Adapter {
             videoCategory.setText(video.getCategory());
             videoUsername.setText(video.getOwnerUsername());
 
-            videoViews.setText(video.getViews() + " " + mContext.getResources().getString(R.string.views));
+            videoUsername.setTag(new ClickEventData(AppConstants.USERNAME_CLICK, video.getOwnerUsername()));
+            videoUsername.setOnClickListener(mClickListener);
+
+            videoComments.setText(video.getComments() + " " + mContext.getResources().getString(R.string.comments));
             setLikes(video);
         }
     }

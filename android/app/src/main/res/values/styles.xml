@@ -10,24 +10,59 @@
 
     <style name="ToolbarTheme" parent="Theme.AppCompat">
         <item name="android:windowNoTitle">true</item>
-        <item name="android:textColorPrimary">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/white</item>
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
+    <style name="AuthLink" parent="">
+        <item name="android:textColor">@color/colorPrimaryDark</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="AuthLinkAction" parent="AuthLink">
+        <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="OptionTextLink" parent="">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
 
     <!-- Buttons -->
+
+    <style name="ButtonTab" parent="">
+        <item name="android:textAlignment">center</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:background">@drawable/button_tab_shape</item>
+    </style>
 
     <style name="Button.Base" parent="">
         <item name="android:layout_gravity">center</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:gravity">center</item>
-        <item name="android:textSize">18sp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:height">35dp</item>
     </style>
 
     <style name="ActionButton" parent="Button.Base">
         <item name="android:background">@drawable/action_button_shape</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="FacebookButton" parent="Button.Base">
+        <item name="android:background">@drawable/facebook_button_shape</item>
+        <item name="android:textColor">@color/white</item>
+    </style>
+
+    <style name="GoogleButton" parent="Button.Base">
+        <item name="android:background">@drawable/google_button_shape</item>
         <item name="android:textColor">@color/white</item>
     </style>
 

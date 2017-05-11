@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_marginStart="10dp"
+    android:layout_marginEnd="10dp"
+    android:layout_marginTop="16dp"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <ImageView
+        android:id="@+id/logo"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15px"
+        android:layout_gravity="center"
+        android:src="@drawable/logo"/>
+
+    <LinearLayout
+        android:id="@+id/authLayout"
+        android:layout_marginTop="80dp"
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/localSignupButton"
+            android:text="@string/authSignup"
+            style="@style/ActionButton"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
+
+        <Button
+            android:id="@+id/facebookSignupButton"
+            android:text="@string/authFacebook"
+            style="@style/FacebookButton"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
+
+        <Button
+            android:id="@+id/googleSignupButton"
+            android:text="@string/authGoogle"
+            style="@style/GoogleButton"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:layout_width="match_parent"
+            android:layout_height="35dp" />
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_marginTop="15dp"
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/haveAccountTextView"
+                style="@style/AuthLink"
+                android:text="@string/haveAccount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+            <TextView
+                android:id="@+id/loginLink"
+                style="@style/AuthLinkAction"
+                android:layout_marginStart="5dp"
+                android:text="@string/login"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

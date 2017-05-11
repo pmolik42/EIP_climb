@@ -1,21 +1,27 @@
 package com.climb.eip.climb.fragments;
 
 import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.climb.eip.climb.R;
 import com.climb.eip.climb.activities.LoginActivity;
@@ -24,8 +30,18 @@ import com.climb.eip.climb.adapters.VideoListAdapter;
 import com.climb.eip.climb.api.models.User;
 import com.climb.eip.climb.api.models.Video;
 import com.climb.eip.climb.bus.BusProvider;
+import com.climb.eip.climb.events.GetFailureEvent;
+import com.climb.eip.climb.events.GetJsonDataEvent;
+import com.climb.eip.climb.events.GetProfileEvent;
+import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.manager.ClimbManager;
+import com.climb.eip.climb.utils.Fetcher;
 import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
+import com.squareup.picasso.Picasso;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,10 +53,12 @@ import butterknife.ButterKnife;
  * Created by Younes on 24/03/2017.
  */
 
-public class ProfileFragment extends Fragment {
+public class ProfileFragment extends BaseFragment {
 
     @Bind(R.id.followers) TextView mFollowers;
     @Bind(R.id.following) TextView mFollowing;
+    @Bind(R.id.battles) TextView mBattles;
+
     @Bind(R.id.profileBio) TextView mBio;
     @Bind(R.id.profileName) TextView mName;
 
@@ -48,8 +66,15 @@ public class ProfileFragment extends Fragment {
 
     @Bind(R.id.profileContent) RelativeLayout mProfileContent;
 
-    @Bind(R.id.logout) Button mLogoutButton;
+    @Bind(R.id.videoTab) Button mVideosTabButton;
+    @Bind(R.id.battleTab) Button mBattlesTabButton;
+    @Bind(R.id.bookTab) Button mBookTabButton;
+    @Bind(R.id.optionsButton) ImageView mOptions;
     @Bind(R.id.followButton) Button mFollowButton;
+    @Bind(R.id.unfollowButton) Button mUnfollowButton;
+
+    @Bind(R.id.listButton) ImageView mListButton;
+    @Bind(R.id.gridButton) ImageView mGridButton;
 
     @Bind(R.id.progress) ProgressBar mProgressBar;
 
@@ -58,10 +83,11 @@ public class ProfileFragment extends Fragment {
     private Context mContext;
     private NavigationActivity mListener;
     private List<Video> mVideos = new ArrayList<Video>();
-    private User user;
     private String username;
     private Bus mBus = BusProvider.getInstance();
-    private ClimbManager mManager;
+    private ClimbManager mClimbManager;
+    private boolean isLoaded = false;
+    private String pictureUrl;
 
     @Override
     public void onAttach(Context context) {
@@ -69,6 +95,21 @@ public class ProfileFragment extends Fragment {
         if (context instanceof Activity){
             this.mListener = (NavigationActivity) context;
             mContext = context;
+            mClimbManager = new ClimbManager(mContext, mBus);
+            mBus.register(this);
+            mBus.register(mClimbManager);
+        }
+    }
+
+    @Override
+    public void onHiddenChanged(boolean hidden) {
+        super.onHiddenChanged(hidden);
+        if (hidden == true) {
+            mBus.unregister(this);
+            mBus.unregister(mClimbManager);
+        } else {
+            mBus.register(this);
+            mBus.register(mClimbManager);
         }
     }
 
@@ -82,6 +123,23 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.profile_fragment, parent, false);
         ButterKnife.bind(this, view);
 
+        mFollowing.setVisibility(View.INVISIBLE);
+        mFollowers.setVisibility(View.INVISIBLE);
+        mBattles.setVisibility(View.INVISIBLE);
+
+        mName.setVisibility(View.INVISIBLE);
+        mBio.setVisibility(View.INVISIBLE);
+
+        mVideosTabButton.setEnabled(true);
+        mBattlesTabButton.setEnabled(false);
+        mBookTabButton.setEnabled(false);
+        mListButton.setEnabled(true);
+        mGridButton.setEnabled(false);
+
+
+        mRecyclerVideo.setVisibility(View.INVISIBLE);
+        mProgressBar.setVisibility(View.VISIBLE);
+
         return view;
     }
 
@@ -93,49 +151,168 @@ public class ProfileFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+        mBus.unregister(this);
+        mBus.unregister(mClimbManager);
     }
 
     @Override
     public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        initLogoutButton();
-        mListener.setToolbarTitle(username);
-        createVideos();
+        Log.d("PROFILE", "username : " + username);
+        if (!isLoaded) {
+            mBus.post(new GetProfileEvent(username));
+        }
         mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
-        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos));
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, new ArrayList<Video>(), this));
     }
 
-    private void initLogoutButton() {
-        mLogoutButton.setOnClickListener(new View.OnClickListener() {
+    @Override
+    public String getToolbarTitle() {
+        return username;
+    }
+
+    private void initDialogOptions() {
+        final Dialog dialog = new Dialog(mContext);
+        dialog.setContentView(R.layout.profile_options_dialog_box);
+        //dialog.setTitle("Title...");
+
+        Window window = dialog.getWindow();
+        WindowManager.LayoutParams wlp = window.getAttributes();
+
+        wlp.gravity = Gravity.BOTTOM;
+        wlp.width = WindowManager.LayoutParams.MATCH_PARENT;
+        wlp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        window.setAttributes(wlp);
+
+        TextView logoutLink = (TextView) dialog.findViewById(R.id.logoutLink);
+        TextView cancelLink = (TextView) dialog.findViewById(R.id.cancelLink);
+
+        logoutLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = sharedPref.edit();
+                editor.putString(getString(R.string.token), "");
+                editor.commit();
+
                 Intent intent = new Intent(mContext, LoginActivity.class);
-                startActivity(intent);
-                getActivity().finish();
+                mListener.startActivity(intent);
+                mListener.finish();
             }
         });
+        cancelLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
+
+        dialog.show();
     }
 
-    private void createVideos() {
-        Video video1 = new Video("Freestyle Hip Hop | Bad and Boujee", "");
-        video1.setLikes(469);
-        video1.setViews(729);
-        video1.setLiked(false);
-        video1.setCategory("Dance");
-        video1.setOwnerUsername("Nescah");
-        video1.setDescription(mContext.getResources().getString(R.string.sampleBio));
+    private Video createVideo(JSONObject object, String username, String pictureUrl) {
+        Video video = new Video(object.optString("title"), object.optString("url"));
 
-        mVideos.add(video1);
-        mVideos.add(video1);
-        mVideos.add(video1);
-        mVideos.add(video1);
-        mVideos.add(video1);
+        video.setLikes(0);
+        video.setViews(0);
+        video.setComments(0);
+        video.setLiked(false);
+        video.setCategory(object.optString("category"));
+        video.setOwnerUsername(username);
+        video.setOwnerProfilePicture(pictureUrl.replace("localhost", "10.0.2.2"));
+        video.setThumbnailVideo(object.optString("thumbnailUrl").replace("localhost", "10.0.2.2"));
+        video.setDescription(object.optString("description"));
 
+        return video;
     }
-
 
 
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    private void onVideosReceived(JSONArray videos, String username, String pictureUrl) {
+        for (int i = 0; i < videos.length(); i++) {
+            Video video = createVideo(videos.optJSONObject(i), username, pictureUrl);
+            if (mVideos.size() < 5)
+                mVideos.add(video);
+        }
+
+        mRecyclerVideo.setAdapter(new VideoListAdapter(mContext, mVideos, this));
+        mRecyclerVideo.setVisibility(View.VISIBLE);
+        mProgressBar.setVisibility(View.GONE);
+
+
+    }
+
+    private void onProfileReceived(JSONObject object) {
+        JSONObject profile = object.optJSONObject("user").optJSONObject("profile");
+
+        if (object.optBoolean("isOwner")) {
+            mOptions.setVisibility(View.VISIBLE);
+            mOptions.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    initDialogOptions();
+                }
+            });
+        } else {
+            if (object.optBoolean("isFollowing")) {
+                mUnfollowButton.setVisibility(View.VISIBLE);
+            } else {
+                mFollowButton.setVisibility(View.VISIBLE);
+            }
+        }
+
+        mFollowers.setText(object.optString("followers") + "\nFollowers");
+        mFollowing.setText(object.optString("following") + "\nFollowing");
+        mBattles.setText("0\nBattles");
+
+        mFollowing.setVisibility(View.VISIBLE);
+        mFollowers.setVisibility(View.VISIBLE);
+        mBattles.setVisibility(View.VISIBLE);
+
+        mName.setText(profile.optString("firstName") + " " + profile.optString("lastName"));
+        mBio.setText(profile.optString("bio"));
+        mName.setVisibility(View.VISIBLE);
+        mBio.setVisibility(View.VISIBLE);
+
+        pictureUrl = profile.optString("pictureUrl");
+        if (pictureUrl.length() > 0)
+            Picasso.with(mContext).load(pictureUrl.replace("localhost", "10.0.2.2")).into(mProfilePicture);
+
+    }
+
+    @Subscribe
+    public void onGetJsonDataEvent(final GetJsonDataEvent event) {
+        Log.d("PROFILE", "ON A RECU LES DATA");
+        JSONObject object = event.getObject();
+
+        if (object.optJSONArray("videos") != null) {
+            mVideos.removeAll(mVideos);
+            onVideosReceived(object.optJSONArray("videos"), object.optString("username"), object.optString("userProfilePicture"));
+        } else {
+            onProfileReceived(object);
+            mBus.post(new GetProfileVideosEvent(username));
+        }
+    }
+
+    @Subscribe
+    public void onGetFailureEvent(final GetFailureEvent event) {
+        Log.d("PROFILE", event.getMessage());
+        String message = event.getMessage();
+        mProgressBar.setVisibility(View.GONE);
+        mRecyclerVideo.setVisibility(View.VISIBLE);
+        if (event.getStatusCode() != 200) {
+            SharedPreferences sharedPref = mContext.getSharedPreferences(mContext.getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = sharedPref.edit();
+            editor.putString(mContext.getString(R.string.token), "");
+            editor.commit();
+
+            Intent intent = new Intent(mContext, LoginActivity.class);
+            mContext.startActivity(intent);
+            mListener.finish();
+        } else
+            Toast.makeText(getContext(), message, Toast.LENGTH_LONG).show();
     }
 }

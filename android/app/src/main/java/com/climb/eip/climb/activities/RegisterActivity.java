@@ -2,11 +2,13 @@ package com.climb.eip.climb.activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.climb.eip.climb.R;
@@ -34,8 +36,10 @@ public class RegisterActivity extends AppCompatActivity {
     @Bind(R.id.usernameField) EditText mUsernameField;
     @Bind(R.id.confirmPasswordField) EditText mConfirmPasswordField;
 
-    @Bind(R.id.loginButton) Button mLoginButton;
     @Bind(R.id.registerButton) Button mRegisterButton;
+
+    @Bind(R.id.haveAccountTextView) TextView haveAccountTextView;
+    @Bind(R.id.loginLink) TextView loginLink;
 
     private String mEmail;
     private String mUsername;
@@ -55,7 +59,7 @@ public class RegisterActivity extends AppCompatActivity {
 
         mClimbManager = new ClimbManager(this, mBus);
 
-        this.initLoginButton();
+        this.initLoginLink();
         this.initRegisterButton();
 
     }
@@ -79,7 +83,6 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mRegisterButton.setEnabled(false);
-                mLoginButton.setEnabled(false);
                 mEmail = mEmailField.getText().toString();
                 mUsername = mUsernameField.getText().toString();
                 mPassword = mPasswordField.getText().toString();
@@ -89,8 +92,8 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
-    private void initLoginButton() {
-        mLoginButton.setOnClickListener(new View.OnClickListener() {
+    private void initLoginLink() {
+        loginLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent= new Intent(mContext, LoginActivity.class);
@@ -101,18 +104,24 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     @Subscribe
-    public void onGetSessionEvent(GetSessionEvent event) {
-        //mLoginButton.setEnabled(true);
-        //mRegisterButton.setEnabled(true);
-        //Toast.makeText(this, event.getSession().getMessage(), Toast.LENGTH_SHORT).show();
-        Intent intent = new Intent(this, NavigationActivity.class);
+    public void onGetSessionEvent(final GetSessionEvent event) {
+        String username = event.getUser().getUsername();
+        String token = event.getToken();
+
+        SharedPreferences sharedPref = getSharedPreferences(getString(R.string.sharedPreference), Context.MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPref.edit();
+        editor.putString(getString(R.string.token), token);
+        editor.putString(getString(R.string.username), username);
+
+        editor.commit();
+
+        Intent intent = new Intent(mContext, NavigationActivity.class);
         startActivity(intent);
         finish();
     }
 
     @Subscribe
     public void onGetFailureEvent(GetFailureEvent event) {
-        mLoginButton.setEnabled(true);
         mRegisterButton.setEnabled(true);
         Toast.makeText(this, event.getMessage(), Toast.LENGTH_SHORT).show();
     }

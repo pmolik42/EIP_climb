@@ -1,0 +1,48 @@
+<nav class="navbar navbar-fixed-top navbar-inverse">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" style="color: #fff;" routerLink="/home/videos">Climb</a>
+            <div class="navbar-search visible-xs"> <!-- Trick to show the search-navbar in xs (temporary trick) -->
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Je cherche...">
+                    <span class="input-group-btn">
+                        <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                    </span>
+                </div><!-- /.input-group -->
+            </div><!-- /.navbar-search -->
+        </div>
+
+        <div id="navbar" class="collapse navbar-collapse">
+          <ul class="nav navbar-nav">
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/profile">Ma chaîne</a></li>
+                <li><a href="#">Mes battles</a></li>
+                <li><a href="#">Mes follows</a></li>
+                <li><a href="#">Classement</a></li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/settings">Paramètres</a></li>
+          </ul>
+          <div class="navbar-search hidden-xs"> <!-- Trick to hide the search-navbar in xs in the toggle navigation (temporary trick) -->
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Je cherche...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="button"><span class="glyphicon glyphicon-search" aria-hidden="true"></span></button>
+                </span>
+            </div><!-- /.input-group -->
+          </div><!-- /.navbar-search -->
+        </div><!-- /.nav-collapse -->
+      </div><!-- /.container -->
+    </nav><!-- /.navbar -->
+
+<router-outlet></router-outlet>
+
+<div class="footer">
+  <div id="fixed" class="col-xs-12">
+       <hr>
+  <p>&copy; Climb Team &middot; <a href="#">CGU</a> &middot; <a href="#">A propos</a></p>
+  </div>
+</div>

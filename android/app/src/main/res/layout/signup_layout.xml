@@ -9,68 +9,91 @@
 
     <ImageView
         android:id="@+id/logo"
-        android:layout_width="300dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15px"
         android:layout_gravity="center"
-        android:background="@drawable/logo"
+        android:src="@drawable/logo"
         android:contentDescription="@string/appName" />
 
-    <EditText
-        android:id="@+id/emailField"
-        style="@style/EditText.Base"
-        android:layout_width="match_parent"
-        android:inputType="textEmailAddress"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:drawableLeft="@drawable/ic_email"
-        android:hint="@string/emailPlaceholder" />
-
-    <EditText
-        android:id="@+id/usernameField"
-        style="@style/EditText.Base"
-        android:layout_width="match_parent"
-        android:inputType="text"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"
-        android:hint="@string/usernamePlaceholder" />
-
-    <EditText
-        android:id="@+id/passwordField"
-        style="@style/EditText.Base"
-        android:layout_width="match_parent"
-        android:inputType="textPassword"
-        android:hint="@string/passwordPlaceholder"
-        android:drawableLeft="@drawable/ic_key"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp"/>
-
-    <EditText
-        android:id="@+id/confirmPasswordField"
-        style="@style/EditText.Base"
-        android:layout_width="match_parent"
-        android:inputType="textPassword"
-        android:hint="@string/confirmPasswordPlaceholder"
-        android:drawableLeft="@drawable/ic_key"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="15dp" />
-
-    <Button
-        android:id="@+id/registerButton"
-        style="@style/ActionButton"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/register" />
+        android:layout_marginTop="40dp" >
 
-    <Button
-        android:id="@+id/loginButton"
-        style="@style/PassiveButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        <TextView
+            android:layout_gravity="center"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:layout_marginBottom="15dp"
+            android:text="@string/createAccountTextView"/>
+
+        <EditText
+            android:id="@+id/emailField"
+            style="@style/EditText.Base"
+            android:layout_width="match_parent"
+            android:inputType="textEmailAddress"
+            android:layout_marginBottom="15dp"
+            android:hint="@string/emailPlaceholder" />
+
+        <EditText
+            android:id="@+id/usernameField"
+            style="@style/EditText.Base"
+            android:layout_width="match_parent"
+            android:inputType="text"
+            android:layout_marginBottom="15dp"
+            android:hint="@string/usernamePlaceholder" />
+
+        <EditText
+            android:id="@+id/passwordField"
+            style="@style/EditText.Base"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"
+            android:hint="@string/passwordPlaceholder"
+            android:layout_marginBottom="15dp"/>
+
+        <EditText
+            android:id="@+id/confirmPasswordField"
+            style="@style/EditText.Base"
+            android:layout_width="match_parent"
+            android:inputType="textPassword"
+            android:hint="@string/confirmPasswordPlaceholder"
+            android:layout_marginBottom="15dp" />
+
+        <Button
+            android:id="@+id/registerButton"
+            style="@style/ActionButton"
+            android:layout_width="match_parent"
+            android:layout_height="35dp"
+            android:text="@string/register" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
         android:layout_marginTop="15dp"
-        android:text="@string/login" />
+        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
 
+        <TextView
+            android:id="@+id/haveAccountTextView"
+            style="@style/AuthLink"
+            android:text="@string/haveAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <TextView
+            android:id="@+id/loginLink"
+            style="@style/AuthLinkAction"
+            android:layout_marginStart="5dp"
+            android:text="@string/login"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
 
 
 </LinearLayout>

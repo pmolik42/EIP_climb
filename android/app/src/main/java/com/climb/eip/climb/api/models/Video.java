@@ -13,10 +13,12 @@ public class Video {
     private String title;
     private String description;
     private String ownerUsername;
+    private String ownerProfilePicture;
     private String url;
     private String thumbnailVideo;
     private int likes;
     private int views;
+    private int comments;
     private boolean liked;
     private Date createdAt;
 
@@ -111,5 +113,21 @@ public class Video {
 
     public void setLiked(boolean liked) {
         this.liked = liked;
+    }
+
+    public String getOwnerProfilePicture() {
+        return ownerProfilePicture;
+    }
+
+    public void setOwnerProfilePicture(String ownerProfilePicture) {
+        this.ownerProfilePicture = ownerProfilePicture;
+    }
+
+    public int getComments() {
+        return comments;
+    }
+
+    public void setComments(int comments) {
+        this.comments = comments;
     }
 }

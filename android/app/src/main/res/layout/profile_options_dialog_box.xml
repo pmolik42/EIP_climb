@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:background="@color/white"
+    android:layout_gravity="bottom"
+    android:layout_height="wrap_content">
+
+    <TextView
+        android:id="@+id/settingsLink"
+        style="@style/OptionTextLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/settings" />
+
+    <TextView
+        android:id="@+id/editProfileLink"
+        style="@style/OptionTextLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/editProfile" />
+
+    <TextView
+        android:id="@+id/logoutLink"
+        style="@style/OptionTextLink"
+        android:textColor="@color/googleColor"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/logout" />
+
+    <TextView
+        android:id="@+id/cancelLink"
+        style="@style/OptionTextLink"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="@string/cancel" />
+
+</LinearLayout>

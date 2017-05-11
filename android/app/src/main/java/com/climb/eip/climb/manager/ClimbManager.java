@@ -3,20 +3,23 @@ package com.climb.eip.climb.manager;
 import android.content.Context;
 import android.util.Log;
 
+import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.climb.eip.climb.AppController;
+import com.climb.eip.climb.R;
 import com.climb.eip.climb.activities.LoginActivity;
 import com.climb.eip.climb.activities.RegisterActivity;
 import com.climb.eip.climb.api.ClimbClientUrl;
-import com.climb.eip.climb.api.models.Session;
 import com.climb.eip.climb.events.GetFailureEvent;
+import com.climb.eip.climb.events.GetHomeEvent;
 import com.climb.eip.climb.events.GetJsonDataEvent;
 import com.climb.eip.climb.events.GetLoginEvent;
 import com.climb.eip.climb.events.GetProfileEvent;
+import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.events.GetRegisterEvent;
 import com.climb.eip.climb.events.GetSessionEvent;
 import com.squareup.otto.Bus;
@@ -41,6 +44,7 @@ public class ClimbManager {
     private Context mContext;
     private Bus mBus;
     private ClimbClientUrl sClimbClient;
+
 
     public ClimbManager(Context context, Bus bus) {
         this.mContext = context;
@@ -114,7 +118,6 @@ public class ClimbManager {
 
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
                         try {
                             if (response.getBoolean("success") == true) {
                                 mBus.post(new GetSessionEvent(response));
@@ -134,14 +137,14 @@ public class ClimbManager {
 
 
     @Subscribe
-    public void OnGetProfileEvent(final GetProfileEvent event) {
+    public void onGetProfileEvent(final GetProfileEvent event) {
         final String username = event.getUsername();
+        Log.d(TAG, "username : " + username);
 
         JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.profileUrl(username),
                 null, new Response.Listener<JSONObject>() {
                     @Override
                     public void onResponse(JSONObject response) {
-                        Log.d(TAG, response.toString());
                         try {
                             if (response.getBoolean("success") == true) {
                                 mBus.post(new GetJsonDataEvent(response));
@@ -155,10 +158,60 @@ public class ClimbManager {
                     }
                 });
 
-        AppController.getInstance().addToRequestQueue(jsonObjReq, "Profile");
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "Profile/" + username);
     }
 
-    private JsonObjectRequest buildRequest(int method, String url, JSONObject obj, Response.Listener<JSONObject> responseListener) {
+    @Subscribe
+    public void onGetHomeEvent(final GetHomeEvent event) {
+        Log.d(TAG, "PUTAIN DE SA MERE LA PUTE");
+        JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.homeUrl(),
+                null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getBoolean("success") == true) {
+                                mBus.post(new GetJsonDataEvent(response));
+                            } else {
+                                mBus.post(new GetFailureEvent(response.getString("message")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mBus.post(new GetFailureEvent(e.getMessage()));
+                        }
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "Home");
+    }
+
+    @Subscribe
+    public void onGetProfileVideosEvent(final GetProfileVideosEvent event) {
+        final String username = event.getUsername();
+
+        JsonObjectRequest jsonObjReq = buildRequest(Request.Method.GET, sClimbClient.profileVideos(username),
+                null, new Response.Listener<JSONObject>() {
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        try {
+                            if (response.getBoolean("success") == true) {
+                                mBus.post(new GetJsonDataEvent(response));
+                            } else {
+                                mBus.post(new GetFailureEvent(response.getString("message")));
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                            mBus.post(new GetFailureEvent(e.getMessage()));
+                        }
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, "Home");
+    }
+
+    private JsonObjectRequest buildRequest(int method, final String url, JSONObject obj, Response.Listener<JSONObject> responseListener) {
+
+        final String token = mContext.getSharedPreferences(mContext.getString(R.string.sharedPreference), Context.MODE_PRIVATE)
+                            .getString(mContext.getString(R.string.token), "");
 
         JsonObjectRequest jsonObjReq = new JsonObjectRequest(method,
                 url, obj,
@@ -168,9 +221,19 @@ public class ClimbManager {
             @Override
             public void onErrorResponse(VolleyError error) {
                 VolleyLog.d(TAG, "Error: " + error.getMessage());
-                mBus.post(new GetFailureEvent(error.getLocalizedMessage()));
+                mBus.post(new GetFailureEvent(error.getMessage(), error.networkResponse.statusCode));
             }
-        }) {};
+        }) {
+            @Override
+            public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String>  params = new HashMap<String, String>();
+                if (token.length() > 0) {
+                    params.put("x-access-token", token);
+                }
+
+                return params;
+            }
+        };
 
         return jsonObjReq;
     }

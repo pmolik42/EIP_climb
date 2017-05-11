@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical" android:layout_width="match_parent"
+    android:background="@color/colorAccentAlpha"
     android:layout_height="wrap_content"
+    android:layout_marginStart="15dp"
+    android:layout_marginEnd="15dp"
     android:layout_marginTop="15dp"
     android:layout_marginBottom="15dp">
 
@@ -11,8 +14,14 @@
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp">
 
+        <ProgressBar
+            android:id="@+id/userImageProgress"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <com.mikhaellopez.circularimageview.CircularImageView
             android:id="@+id/userProfilePicture"
+            android:layout_marginTop="6dp"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:src="@drawable/default_profile_picture"
@@ -20,40 +29,42 @@
 
         <TextView
             android:id="@+id/userUsername"
-            android:textStyle="bold"
+            style="@style/AuthLinkAction"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/sampleUsername"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="5dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginLeft="8dp"
+            android:textSize="17sp"
             android:layout_toRightOf="@id/userProfilePicture"/>
 
         <TextView
             android:id="@+id/videoCategory"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
+            android:layout_below="@id/userUsername"
+            android:layout_toRightOf="@id/userProfilePicture"
             android:text="@string/sampleVideoCategory"
-            android:layout_marginLeft="5dp"
+            android:textSize="12sp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="4dp"
             />
 
-        <TextView
-            android:id="@+id/videoCategoryLabel"
-            android:textStyle="bold"
+        <ImageView
+            android:id="@+id/videoOptionButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/categoryLabel"
-            android:layout_toLeftOf="@id/videoCategory"
-            android:layout_centerVertical="true"/>
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true"
+            android:src="@drawable/ic_options"/>
 
     </RelativeLayout>
 
 
     <RelativeLayout
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="5dp"
         android:layout_width="match_parent"
-        android:layout_height="250dp"
+        android:layout_height="200dp"
         android:background="#000000">
 
         <VideoView
@@ -68,57 +79,21 @@
             android:layout_height="match_parent"
             android:src="@drawable/logo"/>
 
+        <ProgressBar
+            android:id="@+id/videoImageProgress"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <ImageButton
             android:id="@+id/playVideoButton"
             android:layout_width="100dp"
             android:layout_height="100dp"
             android:layout_centerInParent="true"
-            android:src="@drawable/ic_play"
+            android:src="@mipmap/ic_play"
+            android:tint="@color/colorAccentAlpha"
+            android:tintMode="src_atop"
             android:background="#0000"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="30dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
-
-        <ImageButton
-            android:id="@+id/likeButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="#0000"
-            android:layout_centerVertical="true"
-            android:layout_alignParentLeft="true"
-            android:src="@drawable/ic_not_liked"/>
-
-    </RelativeLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="10dp">
-
-        <TextView
-            android:id="@+id/videoLikes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textStyle="bold|italic"
-            android:layout_centerVertical="true"
-            android:text="@string/sampleVideoLikes"/>
-
-        <TextView
-            android:id="@+id/videoViews"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:layout_alignParentRight="true"
-            android:text="@string/sampleVideoViews"
-            android:textStyle="bold|italic" />
 
     </RelativeLayout>
 
@@ -134,18 +109,93 @@
             android:id="@+id/videoTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textStyle="bold"
-            android:textSize="20sp"
+            style="@style/AuthLinkAction"
+            android:textSize="17sp"
             android:text="@string/sampleVideoTitle"/>
 
         <TextView
             android:id="@+id/videoDescription"
-            android:layout_marginTop="10dp"
+            android:layout_marginTop="5dp"
             android:textStyle="normal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/sampleBio" />
 
     </LinearLayout>
+
+    <ImageView
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/line"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="25dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp">
+
+        <LinearLayout
+            android:layout_alignParentLeft="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/videoLikes"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:text="@string/sampleVideoLikes"/>
+
+            <TextView
+                android:id="@+id/videoComments"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:textSize="14sp"
+                android:text="@string/sampleVideoComments" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_alignParentRight="true">
+
+            <ImageButton
+                android:id="@+id/likeButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#0000"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_not_liked"/>
+
+            <ImageButton
+                android:id="@+id/commentButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#0000"
+                android:layout_marginRight="15dp"
+                android:src="@drawable/ic_comment"/>
+
+            <ImageButton
+                android:id="@+id/shareButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="#0000"
+                android:src="@drawable/ic_share"/>
+
+        </LinearLayout>
+
+    </RelativeLayout>
 
 </LinearLayout>

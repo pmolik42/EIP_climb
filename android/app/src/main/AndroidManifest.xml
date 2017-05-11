@@ -8,7 +8,7 @@
     <application
         android:name=".AppController"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_play"
         android:label="@string/appName"
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
@@ -16,15 +16,19 @@
         <meta-data android:name="android.security.net.config"
             android:resource="@xml/network_security_config" />
 
-        <activity android:name=".activities.LoginActivity">
+        <activity android:name=".activities.AuthActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity android:name=".activities.NavigationActivity"></activity>
         <activity android:name=".activities.RegisterActivity"></activity>
+        <activity android:name=".activities.LoginActivity"></activity>
+
+
     </application>
 
 </manifest>

@@ -1,0 +1,86 @@
+<div class="container">
+            <div id="myModal1" class="modal fade" style="opacity: 0.8;" tabindex="-1" role="dialog" aria-hidden="true" data-backdrop="static" aria-labelledby="login-modal">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div id="modal-login-header" class="modal-header">
+                            <button id="question-icon" type="button" class="close" data-dismiss="modal" aria-hidden="true" data-toggle="tooltip" data-placement="top" title="Climb,&nbsp;c'est&nbsp;quoi&nbsp;?">
+                                <span id="login-icon-header" class="glyphicon glyphicon-question-sign" aria-hidden="true"></span>
+                            </button>
+                        </div>
+                        <div class="modal-title" id="login-modal">
+                            <div class="col-md-offset-4 col-xs-12 col-md-4 on-center-col">
+                                <img class="img-responsive" alt="logo-climb" style="width: 170px; height: 126px; padding: 15px 0;" src="../../assets/img/logo_climb_big.png">
+                            </div>
+                        </div>
+                        <div class="modal-body" style="height: 440px;">
+                            <form (ngSubmit)="onSubmit()" class="form col-md-12 center-block">
+                                <div class="form-group">
+                                    <input [(ngModel)]=email id="email" class="form-control input-lg" placeholder="Email" type="text" name="email">
+                                </div>
+                                <div class="form-group">
+                                    <input [(ngModel)]=password id="password" class="form-control input-lg" placeholder="Password" type="password" name="password">
+                                </div>
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">Connexion</button>
+                                    <h4 class="text-center" style="color: grey;">Via</h4>
+                                    <hr class="login-form-hr">
+                                    <div class="row" style="margin: 10px 0;">
+                                        <div class="col-xs-4" style="padding: 0;">
+                                            <button class="btn btn-social-icon btn-lg btn-facebook hidden-xs">
+                                                <span class="fa fa-facebook"></span>
+                                            </button>
+                                            <button class="btn btn-social-icon btn-facebook visible-xs">
+                                                <span class="fa fa-facebook"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-4 on-center-col" style="padding: 0;">
+                                            <button class="btn btn-social-icon btn-lg btn-google hidden-xs">
+                                                <span class="fa fa-google"></span>
+                                            </button>
+                                            <button class="btn btn-social-icon btn-google visible-xs">
+                                                <span class="fa fa-google"></span>
+                                            </button>
+                                        </div>
+                                        <div class="col-xs-4 on-right-col" style="padding: 0;">
+                                            <button class="btn btn-social-icon btn-lg btn-twitter hidden-xs">
+                                                <span class="fa fa-twitter"></span>
+                                            </button>
+                                            <button class="btn btn-social-icon btn-twitter visible-xs">
+                                                <span class="fa fa-twitter"></span>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <hr class="login-form-hr">
+                                    <span class="text-bold hidden-xs"><a style="color: grey;" href="#needhelp">De l'aide ?</a></span>
+                                    <span class="pull-right text-bold hidden-xs"><a style="color: grey;" href="#signup">Inscription</a></span>
+                                    <span class="text-center text-bold visible-xs"><a style="color: grey;" href="#signup">Inscription</a></span>
+                                    <span class="text-center text-bold visible-xs"><a style="color: grey;" href="#needhelp">De l'aide ?</a></span>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="myModal2" class="modal fade" tabindex="-1" role="dialog">
+                <div class="modal-dialog" role="document">
+                    <div id="modal-explain-content" class="modal-content">
+                        <div id="modal-explain-header" class="modal-header">
+                            <button id="modal-explain-close" type="button" class="close" style="display: none;" data-dismiss="modal" aria-hidden="true"></button>
+                        </div>
+                        <div class="modal-title"></div>
+                        <div class="modal-body" style="color: #fff;">
+                                <h1 class="text-center hidden-xs">Bienvenue sur Climb</h1>
+                                <h2 class="text-center visible-xs">Bienvenue sur Climb</h2>
+                                <hr>
+                                <p style="font-size: 16px;">Venez défier d'autres personnes dans votre domaine pour vous élever dans le classement.
+                                    <br>Postez vos vidéos artistiques et montez dans le classement pour que l'on vous reconnaisse à votre juste valeur !
+                                    <br>Devenez le roi du classement et faites de votre passion un mêtier en vous faisant sponsoriser (Qui sait ?).</p>
+                                <hr>
+                                <h3 class="text-center hidden-xs">Qu'attendez-vous ? Commencez à grimper !</h3>
+                                <h4 class="text-center visible-xs">Qu'attendez-vous ? Commencez à grimper !</h4>
+                        </div>
+                    </div><!-- /.modal-content -->
+                </div><!-- /.modal-dialog -->
+            </div><!-- /.modal -->
+        </div><!--/.container-->
