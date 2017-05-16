@@ -12,19 +12,39 @@ var headers = {
 var baseUrl = "http://localhost:8080/api/profile/";
 
 describe('/GET profile/test', () => {
-      it('it should GET test profile', (done) => {
-        request.get({url: baseUrl + 'test', headers: headers}, (err, httpResponse, body) => {
-              expect(JSON.parse(body).success).to.equal(true);
-              done();
-            });
-      });
-  });
-
-  describe('/GET profile/doesntexist', () => {
-        it('it should return user not found', (done) => {
-          request.get({url: baseUrl + 'doesntexist', headers: headers}, (err, httpResponse, body) => {
-                expect(JSON.parse(body).message).to.equal('User not found');
-                done();
-              });
-        });
+    it('it should GET test profile', (done) => {
+      request.get({url: baseUrl + 'test', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).success).to.equal(true);
+            done();
+          });
     });
+
+    it('it should return the right types for the JSON parameters', (done) => {
+      request.get({url: baseUrl + 'test', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).success).to.be.a('boolean');
+            expect(JSON.parse(body).user).to.be.an('object');
+            expect(JSON.parse(body).followers).to.be.a('number');
+            expect(JSON.parse(body).following).to.be.a('number');
+            expect(JSON.parse(body).isOwner).to.be.a('boolean');
+            expect(JSON.parse(body).isFollowing).to.be.a('boolean');
+            done();
+          });
+    });
+});
+
+describe('/GET profile/doesntexist', () => {
+    it('it should return user not found', (done) => {
+      request.get({url: baseUrl + 'doesntexist', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).message).to.equal('User not found');
+            done();
+          });
+    });
+
+    it('it should return the right types for the JSON parameters', (done) => {
+      request.get({url: baseUrl + 'doesntexist', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).success).to.be.a('boolean');
+            expect(JSON.parse(body).message).to.be.a('string');
+            done();
+          });
+    });
+});

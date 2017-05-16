@@ -3,7 +3,7 @@
   "main": "server.js",
   "private": "true",
   "scripts": {
-    "test": "mocha --reporter spec ./test/test.js"
+    "test": "mocha --reporter spec ./test/authentification_register.js"
   },
   "dependencies": {
     "async": "^2.1.5",

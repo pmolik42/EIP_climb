@@ -1,4 +1,4 @@
-  const expect = require('chai').expect;
+const expect = require('chai').expect;
 const request = require('request');
 
 const mongoose = require('mongoose');
