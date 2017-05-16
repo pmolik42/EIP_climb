@@ -12,6 +12,7 @@ var headers = {
 var baseUrl = "http://localhost:8080/api/profile/";
 
 describe('/GET profile/test', () => {
+
     it('it should GET test profile', (done) => {
       request.get({url: baseUrl + 'test', headers: headers}, (err, httpResponse, body) => {
             expect(JSON.parse(body).success).to.equal(true);
@@ -19,7 +20,7 @@ describe('/GET profile/test', () => {
           });
     });
 
-    it('it should return the right types for the JSON parameters', (done) => {
+    it('it should return the right types of JSON parameters', (done) => {
       request.get({url: baseUrl + 'test', headers: headers}, (err, httpResponse, body) => {
             expect(JSON.parse(body).success).to.be.a('boolean');
             expect(JSON.parse(body).user).to.be.an('object');
@@ -30,6 +31,34 @@ describe('/GET profile/test', () => {
             done();
           });
     });
+
+    it('it should GET test\'s profile videos ', (done) => {
+      request.get({url: baseUrl + 'test/videos', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).success).to.equal(true);
+            done();
+          });
+    });
+
+    it('it should return the right types of JSON parameters', (done) => {
+      request.get({url: baseUrl + 'test/videos', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).success).to.be.a('boolean');
+            expect(JSON.parse(body).videos).to.be.an('array');
+            expect(JSON.parse(body).username).to.be.a('string');
+            expect(JSON.parse(body).userProfilePicture).to.be.a('string');
+            done();
+          });
+    });
+
+    //do the test for a real profile without videos
+    it('it should GET perceles\' profile with empty videos array', (done) => {
+      request.get({url: baseUrl + 'perceles/videos', headers: headers}, (err, httpResponse, body) => {
+          expect(JSON.parse(body).success).to.equal(true);
+          expect(JSON.parse(body).videos).to.have.lengthOf(0);
+          done();
+        });
+    });
+
+
 });
 
 describe('/GET profile/doesntexist', () => {
@@ -40,10 +69,17 @@ describe('/GET profile/doesntexist', () => {
           });
     });
 
-    it('it should return the right types for the JSON parameters', (done) => {
+    it('it should return the right types of JSON parameters', (done) => {
       request.get({url: baseUrl + 'doesntexist', headers: headers}, (err, httpResponse, body) => {
             expect(JSON.parse(body).success).to.be.a('boolean');
             expect(JSON.parse(body).message).to.be.a('string');
+            done();
+          });
+    });
+
+    it('it should GET doesntexist\'s profile videos ', (done) => {
+      request.get({url: baseUrl + 'doesntexist/videos', headers: headers}, (err, httpResponse, body) => {
+            expect(JSON.parse(body).success).to.equal(false);
             done();
           });
     });
