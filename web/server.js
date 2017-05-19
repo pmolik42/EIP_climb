@@ -15,6 +15,8 @@ const bodyParser = require('body-parser');
 const session = require('express-session');
 const config = require('./config/config.js');
 
+const multer  = require('multer');
+
 //import { PassportLocal } from './config/passport';
 
 // configuration
