@@ -13,7 +13,6 @@ const morgan = require('morgan');
 const cookieParser = require('cookie-parser');
 const bodyParser = require('body-parser');
 const session = require('express-session');
-
 const config = require('./config/config.js');
 
 //import { PassportLocal } from './config/passport';
@@ -32,13 +31,28 @@ db.once("open", (callback) => {
 
 require('./config/passport')(passport); // pass passport for configuration
 
-// set up our express application
+// set accept headers
 app.use(function(req, res, next) {
+  // Set to true if you need the website to include cookies in the requests sent
+  // to the API (e.g. in case you use sessions)
+  res.setHeader('Access-Control-Allow-Credentials', true);
+
+
+  // Allow any request headers
   res.header("Access-Control-Allow-Origin", "*");
-  res.header("Access-Control-Allow-Headers", "Content-Type, Access-Control-Allow-Headers, Authorization, x-access-token, X-Requested-With");
-  res.header("Access-Control-Allow-Methods", "GET,POST,PUT,DELETE,OPTIONS");
+
+  // Allow any request headers
+  if (req.get("Access-Control-Request-Headers")){
+       res.setHeader('Access-Control-Allow-Headers', req.get("Access-Control-Request-Headers"));
+    }
+
+  // Request methods you wish to allow (all here)
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+  // Pass to next layer of middleware
   next();
 });
+
+
 app.use(morgan('dev')); // log every request to the console
 app.use(cookieParser()); // read cookies (needed for auth)
 app.use(bodyParser.json()); // get information from html forms
