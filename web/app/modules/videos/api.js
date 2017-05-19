@@ -8,7 +8,7 @@ const isTokenValid = require('../../middlewares.js').isTokenValid;
 
 
 //ffmpeg for thumbnails
-var ffmpeg = require('fluent-ffmpeg');
+//var ffmpeg = require('fluent-ffmpeg');
 
 //multer for upload
 const multer  = require('multer');
