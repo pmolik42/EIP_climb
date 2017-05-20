@@ -27,6 +27,7 @@
         <activity android:name=".activities.NavigationActivity"></activity>
         <activity android:name=".activities.RegisterActivity"></activity>
         <activity android:name=".activities.LoginActivity"></activity>
+        <activity android:name=".activities.EditProfileActivity"></activity>
 
 
     </application>

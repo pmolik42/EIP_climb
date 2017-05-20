@@ -5,6 +5,7 @@ import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,6 +25,13 @@ import com.climb.eip.climb.utils.AppConstants;
 import com.climb.eip.climb.utils.ClickEventData;
 import com.mikhaellopez.circularimageview.CircularImageView;
 import com.squareup.picasso.Picasso;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
+import com.volokh.danylo.video_player_manager.ui.MediaPlayerWrapper;
+import com.volokh.danylo.video_player_manager.ui.SimpleMainThreadMediaPlayerListener;
+import com.volokh.danylo.video_player_manager.ui.VideoPlayerView;
 
 import org.w3c.dom.Text;
 
@@ -35,6 +43,7 @@ import java.util.List;
 
 public class VideoListAdapter extends RecyclerView.Adapter {
 
+    public static final String TAG = "VideoListAdapter";
     private Context mContext;
     private List<Video> mVideos;
     private View.OnClickListener mClickListener;
@@ -70,7 +79,7 @@ public class VideoListAdapter extends RecyclerView.Adapter {
 
     public class VideoHolder extends RecyclerView.ViewHolder {
 
-        public VideoView videoView;
+        public VideoPlayerView videoView;
         public ImageView videoThumbnail;
         public TextView videoLikes;
         public TextView videoComments;
@@ -84,12 +93,13 @@ public class VideoListAdapter extends RecyclerView.Adapter {
         public ProgressBar userPictureProgress;
         public ImageButton videoPlay;
 
+
         public VideoHolder(View itemView) {
             super(itemView);
 
             videoPlay = (ImageButton) itemView.findViewById(R.id.playVideoButton);
 
-            videoView = (VideoView) itemView.findViewById(R.id.videoView);
+            videoView = (VideoPlayerView) itemView.findViewById(R.id.videoView);
             videoLikes = (TextView) itemView.findViewById(R.id.videoLikes);
             videoComments = (TextView) itemView.findViewById(R.id.videoComments);
             videoTitle = (TextView) itemView.findViewById(R.id.videoTitle);
@@ -106,7 +116,7 @@ public class VideoListAdapter extends RecyclerView.Adapter {
 
         }
 
-        public void bindViewHolder(Video video, int position) {
+        public void bindViewHolder(final Video video, int position) {
             setTextViews(video);
             setLikeButton(video, position);
             videoPlay.setVisibility(View.INVISIBLE);
@@ -128,6 +138,37 @@ public class VideoListAdapter extends RecyclerView.Adapter {
 
             userPictureProgress.setVisibility(View.INVISIBLE);
             userImageView.setVisibility(View.VISIBLE);
+            videoView.setTag(new ClickEventData(AppConstants.VIDEO_PLAY_CLICK, video.getUrl().replace("localhost", "10.0.2.2")));
+            videoView.addMediaPlayerListener(new SimpleMainThreadMediaPlayerListener() {
+                @Override
+                public void onVideoPreparedMainThread() {
+                    // We hide the cover when video is prepared. Playback is about to start
+                    videoPlay.setVisibility(View.INVISIBLE);
+                    videoThumbnail.setVisibility(View.INVISIBLE);
+                }
+
+                @Override
+                public void onVideoStoppedMainThread() {
+                    // We show the cover when video is stopped
+                    videoPlay.setVisibility(View.VISIBLE);
+
+                }
+
+                @Override
+                public void onVideoCompletionMainThread() {
+                    // We show the cover when video is completed
+                    videoPlay.setVisibility(View.VISIBLE);
+                    videoThumbnail.setVisibility(View.VISIBLE);
+
+                }
+            });
+            videoPlay.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d(TAG, "video play clicked");
+                    mClickListener.onClick(videoView);
+                }
+            });
 
         }
 

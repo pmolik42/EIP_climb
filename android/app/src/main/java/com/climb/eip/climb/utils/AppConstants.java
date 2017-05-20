@@ -13,7 +13,7 @@ public final class AppConstants {
     public static final int NUMBER_FRAGMENTS = 4;
 
     public static final int USERNAME_CLICK = 0;
-    public static final int VIDEO_CLICK = 1;
+    public static final int VIDEO_PLAY_CLICK = 1;
     public static final int VIDEO_LINK_CLICK = 2;
     public static final int LIKE_CLICK = 3;
     public static final int COMMENT_CLICK = 4;

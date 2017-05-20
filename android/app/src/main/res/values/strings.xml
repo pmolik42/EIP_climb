@@ -8,6 +8,13 @@
     <string name="usernamePlaceholder">Username</string>
     <string name="emailPlaceholder">Email</string>
     <string name="confirmPasswordPlaceholder">Confirm password</string>
+    <string name="firstNamePlaceholder">First Name</string>
+    <string name="lastNamePlaceholder">Last Name</string>
+    <string name="bioPlaceholder">Bio</string>
+    <string name="genderPlaceholder">Gender</string>
+    <string name="phoneNumberPlaceholder">Phone Number</string>
+
+
 
     <!-- ============================================== -->
 
@@ -46,6 +53,9 @@
     <string name="cancel">Cancel</string>
     <string name="editProfile">Edit profile</string>
     <string name="settings">Settings</string>
+    <string name="save">Save</string>
+    <string name="changePicture">Change picture</string>
+    <string name="privateInfo">Personal information</string>
 
 
     <!-- Labels -->

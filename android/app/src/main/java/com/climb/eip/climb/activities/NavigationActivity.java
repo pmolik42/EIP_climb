@@ -24,6 +24,11 @@ import com.climb.eip.climb.fragments.ProfileFragment;
 import com.climb.eip.climb.utils.AppConstants;
 import com.climb.eip.climb.utils.ClickEventData;
 import com.climb.eip.climb.utils.Fetcher;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
+import com.volokh.danylo.video_player_manager.ui.VideoPlayerView;
 
 import java.util.HashMap;
 import java.util.Stack;
@@ -51,6 +56,14 @@ public class NavigationActivity extends AppCompatActivity {
 
     private int mPosition;
     private Context mContext;
+
+
+    private VideoPlayerManager<MetaData> mVideoPlayerManager = new SingleVideoPlayerManager(new PlayerItemChangeListener() {
+        @Override
+        public void onPlayerItemChanged(MetaData metaData) {
+
+        }
+    });
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -210,6 +223,10 @@ public class NavigationActivity extends AppCompatActivity {
         mNavigation.setCurrentItem(val, true);
     }
 
+    public void setToolbarTitle(String title) {
+        mTitleBar.setText(title);
+    }
+
     @Override
     public void onBackPressed() {
         if(mStacks.get(mPosition).size() == 1){
@@ -240,6 +257,10 @@ public class NavigationActivity extends AppCompatActivity {
             mTitleBar.setText(fragment.getToolbarTitle());
             mBackButton.setVisibility(View.VISIBLE);
         }
+    }
+
+    public void playVideo(View view, String url) {
+        mVideoPlayerManager.playNewVideo(null, (VideoPlayerView) view, url);
     }
 
 }

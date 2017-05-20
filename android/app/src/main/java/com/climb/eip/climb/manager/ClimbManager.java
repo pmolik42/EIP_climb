@@ -11,6 +11,7 @@ import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.climb.eip.climb.AppController;
 import com.climb.eip.climb.R;
+import com.climb.eip.climb.activities.EditProfileActivity;
 import com.climb.eip.climb.activities.LoginActivity;
 import com.climb.eip.climb.activities.RegisterActivity;
 import com.climb.eip.climb.api.ClimbClientUrl;
@@ -19,6 +20,7 @@ import com.climb.eip.climb.events.GetHomeEvent;
 import com.climb.eip.climb.events.GetJsonDataEvent;
 import com.climb.eip.climb.events.GetLoginEvent;
 import com.climb.eip.climb.events.GetProfileEvent;
+import com.climb.eip.climb.events.GetProfileUpdateEvent;
 import com.climb.eip.climb.events.GetProfileVideosEvent;
 import com.climb.eip.climb.events.GetRegisterEvent;
 import com.climb.eip.climb.events.GetSessionEvent;
@@ -206,6 +208,28 @@ public class ClimbManager {
                 });
 
         AppController.getInstance().addToRequestQueue(jsonObjReq, "Home");
+    }
+
+    @Subscribe
+    public void onGetUpdateProfileEvent(final GetProfileUpdateEvent event) {
+
+        JSONObject obj = event.getUserJson();
+
+        JsonObjectRequest jsonObjReq = buildRequest(Request.Method.PUT,
+                sClimbClient.profileEditUrl(), obj,
+                new Response.Listener<JSONObject>() {
+
+                    @Override
+                    public void onResponse(JSONObject response) {
+                        if (response.optBoolean("success") == true) {
+                            mBus.post(new GetJsonDataEvent(response));
+                        } else {
+                            mBus.post(new GetFailureEvent(response.optString("message")));
+                        }
+                    }
+                });
+
+        AppController.getInstance().addToRequestQueue(jsonObjReq, EditProfileActivity.TAG);
     }
 
     private JsonObjectRequest buildRequest(int method, final String url, JSONObject obj, Response.Listener<JSONObject> responseListener) {

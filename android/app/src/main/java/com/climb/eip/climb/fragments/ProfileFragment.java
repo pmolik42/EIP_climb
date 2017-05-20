@@ -24,6 +24,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.climb.eip.climb.R;
+import com.climb.eip.climb.activities.EditProfileActivity;
 import com.climb.eip.climb.activities.LoginActivity;
 import com.climb.eip.climb.activities.NavigationActivity;
 import com.climb.eip.climb.adapters.VideoListAdapter;
@@ -39,6 +40,10 @@ import com.climb.eip.climb.utils.Fetcher;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 import com.squareup.picasso.Picasso;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,6 +93,7 @@ public class ProfileFragment extends BaseFragment {
     private ClimbManager mClimbManager;
     private boolean isLoaded = false;
     private String pictureUrl;
+    private boolean isBusRegistered = false;
 
     @Override
     public void onAttach(Context context) {
@@ -96,8 +102,6 @@ public class ProfileFragment extends BaseFragment {
             this.mListener = (NavigationActivity) context;
             mContext = context;
             mClimbManager = new ClimbManager(mContext, mBus);
-            mBus.register(this);
-            mBus.register(mClimbManager);
         }
     }
 
@@ -107,15 +111,22 @@ public class ProfileFragment extends BaseFragment {
         if (hidden == true) {
             mBus.unregister(this);
             mBus.unregister(mClimbManager);
+            isBusRegistered = false;
+            mVideoPlayerManager.stopAnyPlayback();
         } else {
-            mBus.register(this);
-            mBus.register(mClimbManager);
+            if (isBusRegistered == false) {
+                mBus.register(this);
+                mBus.register(mClimbManager);
+                isBusRegistered = true;
+            }
+
         }
     }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
     }
 
     @Override
@@ -151,8 +162,7 @@ public class ProfileFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mBus.unregister(this);
-        mBus.unregister(mClimbManager);
+
     }
 
     @Override
@@ -160,6 +170,9 @@ public class ProfileFragment extends BaseFragment {
         super.onActivityCreated(savedInstanceState);
         Log.d("PROFILE", "username : " + username);
         if (!isLoaded) {
+            mBus.register(this);
+            mBus.register(mClimbManager);
+            isBusRegistered = true;
             mBus.post(new GetProfileEvent(username));
         }
         mRecyclerVideo.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.VERTICAL, false));
@@ -174,7 +187,6 @@ public class ProfileFragment extends BaseFragment {
     private void initDialogOptions() {
         final Dialog dialog = new Dialog(mContext);
         dialog.setContentView(R.layout.profile_options_dialog_box);
-        //dialog.setTitle("Title...");
 
         Window window = dialog.getWindow();
         WindowManager.LayoutParams wlp = window.getAttributes();
@@ -186,7 +198,15 @@ public class ProfileFragment extends BaseFragment {
 
         TextView logoutLink = (TextView) dialog.findViewById(R.id.logoutLink);
         TextView cancelLink = (TextView) dialog.findViewById(R.id.cancelLink);
+        TextView editProfileLink = (TextView) dialog.findViewById(R.id.editProfileLink);
 
+        editProfileLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, EditProfileActivity.class);
+                mListener.startActivity(intent);
+            }
+        });
         logoutLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -283,6 +303,17 @@ public class ProfileFragment extends BaseFragment {
 
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (isBusRegistered == false) {
+            mBus.register(this);
+            mBus.register(mClimbManager);
+            isBusRegistered = true;
+        }
+
+    }
+    
     @Subscribe
     public void onGetJsonDataEvent(final GetJsonDataEvent event) {
         Log.d("PROFILE", "ON A RECU LES DATA");
@@ -291,9 +322,15 @@ public class ProfileFragment extends BaseFragment {
         if (object.optJSONArray("videos") != null) {
             mVideos.removeAll(mVideos);
             onVideosReceived(object.optJSONArray("videos"), object.optString("username"), object.optString("userProfilePicture"));
-        } else {
+        } else if (object.optJSONObject("user") != null) {
             onProfileReceived(object);
             mBus.post(new GetProfileVideosEvent(username));
+        } else if (object.optJSONObject("newUser") != null) {
+            JSONObject profile = object.optJSONObject("newUser").optJSONObject("profile");
+            mName.setText(profile.optString("firstName") + " " + profile.optString("lastName"));
+            mBio.setText(profile.optString("bio"));
+            setUsername(profile.optString("username"));
+            mActivity.setToolbarTitle(profile.optString("username"));
         }
     }
 

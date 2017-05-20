@@ -28,6 +28,10 @@ import com.climb.eip.climb.manager.ClimbManager;
 import com.climb.eip.climb.utils.Fetcher;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
+import com.volokh.danylo.video_player_manager.manager.PlayerItemChangeListener;
+import com.volokh.danylo.video_player_manager.manager.SingleVideoPlayerManager;
+import com.volokh.danylo.video_player_manager.manager.VideoPlayerManager;
+import com.volokh.danylo.video_player_manager.meta.MetaData;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -74,6 +78,7 @@ public class HomeFragment extends BaseFragment {
         if (hidden == true) {
             mBus.unregister(this);
             mBus.unregister(mClimbManager);
+            mVideoPlayerManager.stopAnyPlayback();
         } else {
             mBus.register(this);
             mBus.register(mClimbManager);
