@@ -16,5 +16,21 @@ var videoSchema = mongoose.Schema({
 
 });
 
+videoSchema.methods.copyVideo = (videoObject) => {
+  var video = {};
+  
+  video._id = videoObject._id;
+  video.title = videoObject.title;
+  video.description = videoObject.description;
+  video.ownerId = videoObject.ownerId;
+  video.createdAt = videoObject.createdAt;
+  video.updatedAt = videoObject.updatedAt;
+  video.thumbnailUrl = videoObject.thumbnailUrl;
+  video.url = videoObject.url;
+  video.category = videoObject.category;
+  
+  return video;
+}
+
 // create the model for users and expose it to our app
 module.exports = mongoose.model('Video', videoSchema);

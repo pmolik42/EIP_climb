@@ -5,7 +5,7 @@ import { ProfileService } from './profile.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styles: [`.router-link-active { background-color: red; }`]
+  styleUrls: ['./profile.component.css']
 })
 
 export class ProfileComponent {
@@ -21,6 +21,8 @@ export class ProfileComponent {
   private videos = 0;
   private username = '';
   private bio = '';
+  private isFollowing = false;
+  private isOwner = false;
 
   ngAfterViewInit() {
     this._service.getProfileData().subscribe((result) => {
@@ -34,6 +36,9 @@ export class ProfileComponent {
         this.bio = result.user.profile.bio;
         this.videos = 0;
         this.battles = 0;
+        this.username = result.user.profile.username;
+        this.isOwner = result.isOwner;
+        this.isFollowing = result.isFollowing;
       } else {
         console.log("Authentification failed !");
       }

@@ -1,30 +1,32 @@
-<div *ngFor="let video of videos" class="col-xs-offset-2 col-xs-8" style="border: 1px solid lightgrey; border-radius: 6px;">
-<div class="row" style="padding: 10px;">
-<div class="col-xs-12">
-    <span class="user">
-        <img data-role="user-avatar" src="{{userProfilePicture}}" width="40px" height="40px">
-    </span>
-    <a href="http://www.google.be">{{ownerUsername}}</a>
-</div>
-<div class="col-xs-12" style="padding: 2px;">
-    <video class="img-responsive" controls="" width="100%" height="100%">
+<div class="videos">
+  <div *ngFor="let video of videos" class="panel video">
+    <div class="video-heading">
+      <img src="{{video.ownerProfilePicture}}">
+      <a href="#">{{video.ownerUsername}}</a>
+      <span class="video-category">{{video.category}}</span>
+    </div>
+    <div class="video-content">
+      <video class="img-responsive" controls="" width="100%" height="100%">
         <source src="{{video.url}}" />
-    </video>
-</div>
-<div class="col-xs-12">
-    <a href="http://www.google.be">{{video.title}}</a>
-</div>
-<div class="col-xs-12">
-    <div class="col-xs-3" style="padding: 2px;" >
-        <a href="#" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-heart-empty"></span> like</a>
+      </video>
     </div>
-    <div class=" col-xs-offset-1 col-xs-3" style="padding: 2px;" >
-        <a href="#" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-comment"></span> commenter</a>
+    <div class="video-metadata">
+      <a class="title" href="#">{{video.title}}</a>
+      <p class="video-description">{{video.description}}</p>
     </div>
-    <div class="col-xs-offset-2 col-xs-2" style="padding: 2px;" >
-        <a href="#" class="btn btn-sm btn-default"><span class="glyphicon glyphicon-share"></span> partager</a>
+    <div class="divider">
     </div>
-
-</div>
-</div>
+    <div class="video-footer">
+      <a href="#">
+        {{video.likes}} Likes
+      </a>
+      <a href="#">
+        0 Comments
+      </a>
+      <img class="pull-right" src="../../assets/img/share.png" width="20" height="20">
+      <img class="pull-right" src="../../assets/img/comment.png" style="margin-right:10px; color: #FFFFFF;" width="20" height="20">
+      <img (click)="unlike(video)" *ngIf="video.isLiked == true" class="pull-right" src="../../assets/img/like.png" style="margin-right:10px;" width="20" height="20">
+      <img (click)="like(video)" *ngIf="video.isLiked == false" class="pull-right" src="../../assets/img/unlike.png" style="margin-right:10px;" width="20" height="20">
+    </div>
+  </div>
 </div>

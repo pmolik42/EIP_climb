@@ -3,6 +3,8 @@ const async = require('async');
 const User = require('../../models/user.js');
 const Video = require('../../models/video.js');
 const Follower = require('../../models/follower.js');
+const Like = require('../../models/like.js');
+
 
 const isTokenValid = require('../../middlewares.js').isTokenValid;
 
@@ -20,9 +22,9 @@ const videosApiRoutes = (app) => {
   app.get('/api/videos/trending', isTokenValid, (req, res) => {
     //res.json(req.user);
   });
-  
+
   app.get('/api/videos/feed', isTokenValid, (req, res) => {
-    
+
     async.waterfall([
       (cb) => {
         Follower.find({followerId : req.user.id}).select('userId').exec((err, followers) => {
@@ -43,39 +45,92 @@ const videosApiRoutes = (app) => {
         feedVideosUsers.push({profile: {username : req.user.username, pictureUrl : req.user.pictureUrl}, _id: req.user.id});
         Video.find({ownerId : { $in : usersId}}).limit(20).sort('-createdAt').exec((err, videos) => {
           if (err) return cb(err);
-          let usersVideos = [];
-          async.each(videos, (video, callback) => {
+          async.map(videos, (video, callback) => {
             const user = findUserData(video, feedVideosUsers);
-            let newVideo = {};
+            let newVideo = video.copyVideo(video);
             newVideo.ownerUsername = user.username;
             newVideo.ownerProfilePicture = user.profilePicture;
-            newVideo.updatedAt = video.updatedAt,
-            newVideo.createdAt = video.createdAt,
-            newVideo.ownerId = video.ownerId,
-            newVideo.thumbnailUrl = video.thumbnailUrl,
-            newVideo.url = video.url,
-            newVideo.category = video.category,
-            newVideo.description = video.description,
-            newVideo.title = video.title,
-            usersVideos.push(newVideo);
-            callback();
-          }, (err) => {
+            callback(null, newVideo);
+          }, (err, results) => {
             if (err) return cb(err);
-            cb(null, usersVideos);
+            cb(null, results);
           });
-          
+
+        });
+      },
+      (videos, cb) => {
+        async.map(videos, (video, callback) => {
+          Like.find({videoId: video._id}).exec((err, likes) => {
+            if (err) return callback(err);
+            var userVideo = video;
+            userVideo.likes = likes.length;
+            Like.findOne({userId: req.user.id, videoId: video._id}).exec((err, like) => {
+              if (err) return callback(err);
+              userVideo.isLiked = like ? true : false;
+              callback(null, userVideo);
+            });
+
+          });
+        }, (err, results) => {
+          if (err) return cb(err);
+          cb(null, results);
         });
       }
-      
+
     ], (err, results) => {
       if (err) return res.json({success : false, message : 'No videos found'});
-      
+
       res.json({success : true, videos : results});
     });
-    
-    
+
+
   });
 
+  app.post('/api/videos/:videoId/like', isTokenValid, (req, res) => {
+    const videoId = req.params.videoId || '';
+
+    Video.findOne({_id: videoId}).then((video) => {
+      if (!video) {
+        throw 'Video does not exist';
+      } else return video;
+    }).then((video) => {
+      Like.findOne({videoId: video._id, userId: req.user.id}).exec((err, like) => {
+        if (!like) {
+          let newLike = new Like();
+          newLike.userId = req.user.id;
+          newLike.videoId = videoId;
+          newLike.createdAt = new Date();
+          return newLike.save();
+        }
+        throw 'Video is already liked';
+      });
+    }).then((model) => {
+        res.json({success: true, message: 'Successfully liked'});
+    }).catch((err) => {
+      res.json({success: false, message: err});
+    });
+  });
+
+  app.delete('/api/videos/:videoId/like', isTokenValid, (req, res) => {
+    const videoId = req.params.videoId || '';
+
+    Video.findOne({_id: videoId}).then((video) => {
+      if (!video) {
+        throw 'Video does not exist';
+      } else return video;
+    }).then((video) => {
+      Like.findOne({videoId: video._id, userId: req.user.id}).exec((err, like) => {
+        if (like) {
+          return like.remove();
+        }
+        throw 'Video is not liked';
+      });
+    }).then((model) => {
+        res.json({success: true, message: 'Successfully disliked'});
+    }).catch((err) => {
+      res.json({success: false, message: err});
+    });
+  });
 };
 
 module.exports = videosApiRoutes;

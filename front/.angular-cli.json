@@ -23,9 +23,7 @@
         "./assets/css/bootstrap-social.css",
         "./assets/lib/ie10-viewport-bug-workaround/css/ie10-viewport-bug-workaround.css",
         "./assets/lib/bootstrap-3.3.7/dist/css/bootstrap.css",
-        "./assets/css/index.css",
         "./assets/css/offcanvas.css",
-        "./assets/css/profile.css",
         "./assets/lib/icheck-1.x/skins/flat/red.css"
       ],
       "scripts": [

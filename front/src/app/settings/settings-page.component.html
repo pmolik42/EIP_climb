@@ -1,21 +1,53 @@
-<div class="container">
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-3">
-      <div class="layout-form">
-        <ul style="padding-left: 0;">
-          <li class=""><a href="/settings">Vue d'ensemble</a></li>
-          <li class=""><a href="">Profil</a></li>
-          <li class=""><a href="">Comptes liés</a></li>
-          <li class=""><a href="">Confidentialité</a></li>
-          <li class=""><a href="">Notifications</a></li>
-          <li class=""><a href="">Lecture</a></li>
-          <li class=""><button (click)="logout()">Déconnexion</button></li>
-        </ul>
+<div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+    <div class="col-md-offset-1 col-md-10">
+      <div class="row">
+        <div class="col-md-3 col-xs-12">
+          <div class="home-nav">
+            <div class="panel">
+              <ul class="nav nav-pills nav-stacked">
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/settings/overview">
+                    <i class="fa fa-eye"></i>
+                    Vue d'ensemble
+                  </a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/settings/editProfile">
+                    <i class="fa fa-user-circle"></i>
+                    Profile
+                  </a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/settings/linkedAccounts">
+                    <i class="fa fa-link"></i>
+                    Comptes liés
+                  </a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/settings/confidentility">
+                    <i class="fa fa-key"></i>
+                    Confidentialité
+                  </a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/settings/notifications">
+                    <i class="fa fa-bell"></i>
+                    Notifications
+                  </a>
+                </li>
+                <li>
+                  <a class="logoutLink" (click)="logout()">
+                    <i class="fa fa-sign-out"></i>
+                    Déconnexion
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-9 col-xs-12">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-9">
-      <router-outlet></router-outlet>
-    </div>
-  </div><!--/row-->
-</div><!--/.container-->
+</div>

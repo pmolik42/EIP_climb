@@ -1,17 +1,34 @@
-<div class="container">
-
-  <div class="row">
-    <div class="col-xs-12 col-sm-3">
-      <div class="layout-form">
-        <ul style="padding-left: 0;">
-          <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/home/videos">Videos</a></li>
-          <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/home/battles">Battles en cours</a></li>
-          <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/home/news">News</a></li>
-        </ul>
+<div class="row" style="margin-top: 30px; margin-bottom: 30px;">
+    <div class="col-md-offset-1 col-md-10">
+      <div class="row">
+        <div class="col-md-3 col-xs-12">
+          <div class="home-nav">
+            <div class="panel">
+              <ul class="nav nav-pills nav-stacked">
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/home/videos">
+                    <i class="fa fa-video-camera"></i>
+                    Videos</a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/home/battles">
+                    <i class="fa fa-bolt"></i>
+                    Battles en cours
+                  </a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/home/news">
+                    <i class="fa fa-newspaper-o"></i>
+                    News
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+          <router-outlet></router-outlet>
+        </div>
       </div>
     </div>
-    <div class="col-xs-12 col-sm-9">
-      <router-outlet></router-outlet>
-    </div>
-  </div><!--/row-->
-</div><!--/.container-->
+</div>

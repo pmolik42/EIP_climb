@@ -1,0 +1,33 @@
+<div class="overview">
+  <div class="widget profile">
+    <div class="widget-header">
+      <h3 class="widget-caption">Profile</h3>
+    </div>
+    <div class="widget-body">
+      <p><span class="label">Photo de profile : </span><br><img class="img-rounded" src="{{user.profile.pictureUrl}}"></p>
+      <p><span class="label">Nom d'utilisateur : </span>{{user.profile.username}}</p>
+      <p><span class="label">Prénom : </span>{{user.profile.firstName}}</p>
+      <p><span class="label">Nom : </span>{{user.profile.lastName}}</p>
+      <p><span class="label">Email : </span>{{user.local.email}}</p>
+      <p><span class="label">Bio : </span><br>{{user.profile.bio}}</p>
+
+    </div>
+  </div>
+  <div class="widget profile">
+    <div class="widget-header">
+      <h3 class="widget-caption">Comptes Liés</h3>
+    </div>
+    <div class="widget-body">
+      <p>
+        <span class="label">Facebook : </span>Lier son compte Facebook
+        <button class="btn btn-social-icon btn-facebook">
+          <span class="fa fa-facebook"></span>
+        </button></p>
+      <p><span class="label">Google+ : </span>Lier son compte Google+
+        <button class="btn btn-social-icon btn-google">
+          <span class="fa fa-google"></span>
+        </button>
+      </p>
+    </div>
+  </div>
+</div>
