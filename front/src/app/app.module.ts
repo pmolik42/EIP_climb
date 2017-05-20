@@ -6,6 +6,7 @@ import { RouterModule, Routes }   from '@angular/router';
 
 import { AuthService } from './auth/auth.service';
 import { ProfileService } from './profile/profile.service';
+import { VideosService } from './videos/videos.service';
 
 
 import { AppComponent } from './app.component';
@@ -19,6 +20,9 @@ import { SettingsComponent } from './settings/settings-page.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileVideosComponent } from './profile/videos/videos.component';
 import { BookComponent } from './profile/book/book.component';
+import { OverviewComponent } from './settings/overview/overview.component';
+import { SettingsProfileComponent } from './settings/profile/profile.component';
+
 
 const appRoutes: Routes = [
   { path: '', redirectTo: '/home/videos', pathMatch: 'full' },
@@ -35,7 +39,11 @@ const appRoutes: Routes = [
       { path: 'videos', component: ProfileVideosComponent},
       { path: 'book', component: BookComponent }
     ]},
-    { path: 'settings', component: SettingsComponent }
+    { path: 'settings', redirectTo: '/settings/overview', pathMatch: 'full' },
+    { path: 'settings', component: SettingsComponent, children: [
+      { path: 'overview', component: OverviewComponent },
+      { path: 'editProfile', component: SettingsProfileComponent },
+    ]}
   ] }
 ];
 
@@ -51,7 +59,9 @@ const appRoutes: Routes = [
     SettingsComponent,
     ProfileComponent,
     ProfileVideosComponent,
-    BookComponent
+    BookComponent,
+    OverviewComponent,
+    SettingsProfileComponent
   ],
   imports: [
     BrowserModule,
@@ -61,7 +71,8 @@ const appRoutes: Routes = [
   ],
   providers: [
     AuthService,
-    ProfileService
+    ProfileService,
+    VideosService
   ],
   bootstrap: [AppComponent]
 })

@@ -1,93 +1,67 @@
-<div class="container">
-    <div class="row profile" style="padding-top: 15px;">
-        <div class="col-md-3">
-            <div class="profile-sidebar">
-                <!-- SIDEBAR USERPIC -->
-                <div class="profile-userpic">
-                    <!-- some CSS styling changes and overrides -->
-                    <img class="thumbnail img-responsive" src="{{pictureProfil}}" width="300px" height="300px">
-                   <!-- <img src="http://keenthemes.com/preview/metronic/theme/assets/admin/pages/media/profile/profile_user.jpg" class="img-responsive" alt="">-->
-
-                </div>
-                <!-- END SIDEBAR USERPIC -->
-                <!-- SIDEBAR USER TITLE -->
-                <div class="profile-usertitle">
-                    <div class="profile-usertitle-name">
-                        {{firstName}} {{lastName}}
-                    </div>
-                    <div class="profile-usertitle-job">
-                        Décrivez-vous
-                    </div>
-                    <div>
-                      <p>{{bio}}</p>
-                    </div>
-                </div>
-                <!-- END SIDEBAR USER TITLE -->
-                <!-- SIDEBAR BUTTONS -->
-                <div class="profile-userbuttons">
-                    <ul class="twPc-Arrange">
-                        <li class="twPc-ArrangeSizeFit">
-                            <a href="https://twitter.com/mertskaplan" title="9.840 Tweet">
-                                <span class="twPc-StatLabel twPc-block">Battles</span>
-                                <span class="twPc-StatValue">{{battles}}</span>
-                    </a>
-                        </li>
-                        <li class="twPc-ArrangeSizeFit">
-                    <a href="https://twitter.com/mertskaplan/following" title="{{following}} Following">
-                                <span class="twPc-StatLabel twPc-block">Following</span>
-                                <span class="twPc-StatValue">{{following}}</span>
-                    </a>
-                        </li>
-                        <li class="twPc-ArrangeSizeFit">
-                            <a href="https://twitter.com/mertskaplan/followers" title="{{followers}} Followers">
-                                <span class="twPc-StatLabel twPc-block">Followers</span>
-                                <span class="twPc-StatValue">{{followers}}</span>
-                    </a>
-                        </li>
-               </ul>
-                    <!--<button type="button" class="btn btn-success btn-sm">Follow</button>
-                    <button type="button" class="btn btn-danger btn-sm">Message</button>-->
-                </div>
-                <!-- END SIDEBAR BUTTONS -->
-                <!-- SIDEBAR MENU -->
-                <div class="profile-usermenu">
-                    <ul class="nav">
-                        <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-                            <a routerLink="/profile/videos">
-                            <i class="glyphicon glyphicon-home"></i>
-                            Mes vidéos </a>
-                        </li>
-                        <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-                            <a href="./Chaine_b.html">
-                            <i class="glyphicon glyphicon-"></i>
-                            Mes battles </a>
-                        </li>
-                        <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a href="./account.html">
-          <i class="glyphicon glyphicon-user"></i>
-                            Profil </a>
-        </li>
-        <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
-          <a routerLink="/profile/book">
-          <i class="glyphicon glyphicon-flag"></i>
-          Mon book </a>
-        </li>
-      </ul>
-    </div>
-    <!-- END MENU -->
-  </div>
-</div>
-<div class="col-md-9">
-  <div class="profile-content">
-
+<div class="row" style="margin-top: 30px; margin-bottom: 30px">
+    <div class="col-md-offset-1 col-md-10">
       <div class="row">
-        <router-outlet></router-outlet>
+        <div class="col-md-3 col-xs-12">
+          <div class="profile-nav">
+            <div class="panel">
+              <div class="user-heading round">
+                <a class="user-picture">
+                  <img src={{pictureProfil}} >
+                </a>
+                <h1>{{firstName}} {{lastName}}</h1>
+                <p>{{bio}}</p>
+                <ul class="list-inline">
+                  <li class="list-inline-item">
+                    <a href="#">
+                      <p>{{battles}}</p>
+                      <p>Battles</p>
+                    </a>
+                  </li>
+                  <li class="list-inline-item">
+                    <a href="#">
+                      <p>{{followers}}</p>
+                      <p>Followers</p>
+                    </a>
+                  </li>
+                  <li class="list-inline-item">
+                    <a href="#">
+                      <p>{{following}}</p>
+                      <p>Following</p>
+                    </a>
+                  </li>
+                </ul>
+                <a *ngIf="isFollowing == false && isOwner == false" href="#" class="btn btn-default follow">
+                  Follow
+                </a>
+                <a *ngIf="isFollowing == true && isOwner == false" href="#" class="btn btn-default unfollow">
+                  Unfollow
+                </a>
+              </div>
+              <ul class="nav nav-pills nav-stacked">
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/profile/videos">
+                    <i class="fa fa-video-camera"></i>
+                    Videos</a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/profile/battles">
+                    <i class="fa fa-bolt"></i>
+                    Mes battles
+                  </a>
+                </li>
+                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}">
+                  <a routerLink="/profile/book">
+                    <i class="fa fa-picture-o"></i>
+                    Book
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-8 col-xs-12">
+          <router-outlet></router-outlet>
+        </div>
       </div>
-
-
-
-  </div>
-
-</div>
-</div>
-</div>
+    </div>
+</div><!--/.container-->

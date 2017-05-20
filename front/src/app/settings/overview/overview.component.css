@@ -1,0 +1,54 @@
+.overview .widget-header {
+  background: #F6FAFF;
+  border-color: #56687F;
+  border-radius: 5px;
+  border-width: 0px;
+  color: #56687F;
+}
+
+.overview img {
+}
+
+p {
+  font-size: 14px;
+
+}
+
+span.label {
+  color: #56687F;
+  font-size: 15px;
+  padding: 0;
+}
+
+.widget {
+  box-shadow: none;
+  padding: 0px;
+  margin: 0px 0px 30px;
+}
+
+.widget-header {
+  position: relative;
+  min-height: 35px;
+  box-shadow: rgba(0, 0, 0, 0.298039) 0px 0px 4px;
+  color: rgb(85, 85, 85);
+  padding-left: 12px;
+  text-align: right;
+  background: #FFFFFF;
+}
+
+.widget-body {
+  background-color: #FFFFFF;
+  box-shadow: rgba(0, 0, 0, 0.298039) 1px 0px 10px 1px;
+  padding: 12px;
+}
+
+.widget-caption {
+  line-height: 34px;
+  float: left;
+  text-align: left;
+  font-size: 17px;
+  font-weight: 400;
+  padding: 0px;
+  margin: 0px;
+  color: #56687F;
+}

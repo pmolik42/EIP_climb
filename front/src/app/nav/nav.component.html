@@ -1,4 +1,4 @@
-<nav class="navbar navbar-fixed-top navbar-inverse">
+<nav class="navbar navbar-fixed-top navbar-default navbar-principal">
       <div class="container">
         <div class="navbar-header">
           <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -7,7 +7,8 @@
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
           </button>
-          <a class="navbar-brand" style="color: #fff;" routerLink="/home/videos">Climb</a>
+          <a class="navbar-brand" style="color: #fff;" routerLink="/home/videos">
+          </a>
             <div class="navbar-search visible-xs"> <!-- Trick to show the search-navbar in xs (temporary trick) -->
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Je cherche...">
@@ -20,11 +21,11 @@
 
         <div id="navbar" class="collapse navbar-collapse">
           <ul class="nav navbar-nav">
-                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/profile">Ma chaîne</a></li>
+                <li [routerLinkActive]="['active']"><a routerLink="/profile">Ma chaîne</a></li>
                 <li><a href="#">Mes battles</a></li>
                 <li><a href="#">Mes follows</a></li>
                 <li><a href="#">Classement</a></li>
-                <li [routerLinkActive]="['active']" [routerLinkActiveOptions]="{exact:true}"><a routerLink="/settings">Paramètres</a></li>
+                <li [routerLinkActive]="['active']"><a routerLink="/settings">Paramètres</a></li>
           </ul>
           <div class="navbar-search hidden-xs"> <!-- Trick to hide the search-navbar in xs in the toggle navigation (temporary trick) -->
             <div class="input-group">

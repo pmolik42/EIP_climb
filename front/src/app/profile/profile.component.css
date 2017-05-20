@@ -1,0 +1,61 @@
+.profile-nav ul.nav > li {
+  border-bottom: 1px solid #ebeae6;
+  line-height: 30px;
+}
+
+.profile-nav ul li.active a {
+  color: #AAB3BF;
+  border-left: 5px solid #AAB3BF;
+  background: #F6FAFF;
+}
+
+.profile-nav ul li a {
+  color: #AAB3BF;
+}
+
+.profile-nav ul.list-inline li a {
+  color: #FFFFFF;
+}
+
+.nav-pills {
+  margin-top: 5px;
+}
+
+.user-heading.round a.user-picture {
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+  border: 10px solid rgba(255,255,255,0.3);
+  display: inline-block;
+}
+
+.user-heading {
+  background: #AAB3BF;
+  color: #FFFFFF;
+  border-radius: 4px 4px 0 0;
+  -webkit-border-radius: 4px 4px 0 0;
+  text-align: center;
+  padding: 30px;
+}
+
+.user-heading img {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  -webkit-border-radius: 50%;
+}
+
+.btn.btn-default.follow {
+  background-color: #ADCFFF;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  border-radius: 5px;
+  font-style: bold;
+}
+
+.btn.btn-default.unfollow {
+  background-color: #AAB3BF;
+  color: #FFFFFF;
+  border-color: #FFFFFF;
+  border-radius: 5px;
+  font-style: bold;
+}

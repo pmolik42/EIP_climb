@@ -18,7 +18,7 @@
   margin-right: -4px;
 }
 .modal-backdrop.in {
-   opacity: 0.3; 
+   opacity: 0.3;
 }/*modify the color of the background when we have a modal open*/
 .modal-dialog {
   display: inline-block;
@@ -168,16 +168,12 @@
  * --------------------------------------------------
  */
 @media screen and (min-width: 768px) {
-    footer, .footer #fixed {
-        position: fixed;
-        bottom: 30px;
-        width: 1170px;
-    }
+
 }
 @media screen and (max-width: 768px) {
     .layout-form > ul > li > a, .layout-form > h4 {
         text-align: center;
-    }    
+    }
 }
 /*
  * Style tweaks
@@ -190,6 +186,8 @@ body {
 body {
     padding-top: 70px;
 }
-footer, .footer {
-    padding: 30px 0;
+
+.navbar-brand {
+  background: url('./assets/img/logo.png') center / contain no-repeat;
+  width: 100px;
 }

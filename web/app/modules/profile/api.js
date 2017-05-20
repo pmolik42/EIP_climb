@@ -3,6 +3,9 @@ const async = require('async');
 const User = require('../../models/user.js');
 const Follower = require('../../models/follower.js');
 const Video = require('../../models/video.js');
+const Like = require('../../models/like.js');
+const extend = require('util')._extend;
+
 
 
 
@@ -14,7 +17,7 @@ const profileApiRoutes = (app) => {
     const username = req.params.username || null;
     var profileUser = null;
     var isFollowing = false;
-    
+
     async.series({
       user : (cb) => {
         User.findOne({'profile.username' : username}).select('-local.password').exec((err, user) => {
@@ -40,29 +43,29 @@ const profileApiRoutes = (app) => {
         Follower.findOne({userId : profileUser._id, followerId : req.user.id}).exec((err, follower) => {
           isFollowing = follower == null ? false : true;
           if (err) return cb(err);
-          
+
           cb(null, isFollowing);
         });
       }
     }, (err, results) => {
       if (err) return res.json({success : false, message : 'User not found'});
-      
+
       res.json({success : true,
                 user : results.user.safeUser(results.user),
                 followers : results.followers,
                 following : results.following,
                 isOwner : req.user.username == username ? true : false,
                 isFollowing : results.isFollowing
-               });  
+               });
     });
-    
+
   });
-  
+
   app.get('/api/profile/:username/videos', isTokenValid, (req, res) => {
-    
+
     const username = req.params.username || null;
-    var profileUser = null;
-    
+    let profileUser = null;
+
     async.series({
       user : (cb) => {
         User.findOne({'profile.username' : username}).select('profile.username profile.pictureUrl _id').exec((err, user) => {
@@ -75,19 +78,35 @@ const profileApiRoutes = (app) => {
       videos : (cb) => {
         Video.find({ownerId : profileUser._id}).sort('-createdAt').limit(20).exec((err, videos) => {
           if (err) return cb(err);
-          cb(null, videos);
+          async.map(videos, (video, callback) => {
+            let videoAdditionalData = video.copyVideo(video);
+            videoAdditionalData.ownerUsername = username;
+            videoAdditionalData.ownerProfilePicture = profileUser.profile.pictureUrl;
+            Like.find({videoId: video._id}).exec((err, likes) => {
+              if (err) return callback(err);
+              videoAdditionalData.likes = likes.length;
+              Like.findOne({userId: req.user.id, videoId: videoAdditionalData._id}).exec((err, like) => {
+                if (err) return callback(err);
+                videoAdditionalData.isLiked = like ? true : false;
+                callback(null, videoAdditionalData);
+              });
+            });
+          }, (err, results) => {
+            if (err) return cb(err);
+            cb(null, results);
+          });
         });
       }
     }, (err, results) => {
       if (err) return res.json({success : false, message : 'Videos not found'});
-      
+
       res.json({success : true,
                 videos : results.videos,
                 username : username,
                 userProfilePicture : profileUser.profile.pictureUrl
-               });  
+               });
     });
-    
+
   });
 
 };

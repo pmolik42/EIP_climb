@@ -1,0 +1,9 @@
+.nav-pills > li.active > a {
+  color: #AAB3BF;
+  border-left: 5px solid #AAB3BF;
+  background: #F6FAFF;
+}
+
+.nav-pills > li > a {
+  color: #AAB3BF;
+}
