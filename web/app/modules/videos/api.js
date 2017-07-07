@@ -7,39 +7,10 @@ const Like = require('../../models/like.js');
 
 
 const isTokenValid = require('../../middlewares.js').isTokenValid;
-
+const upload = require('../../middlewares.js').upload.single('video');
 
 //ffmpeg for thumbnails
-//var ffmpeg = require('fluent-ffmpeg');
-
-//multer for upload
-const multer  = require('multer');
-
-// prepare multer storage
-var video_storage =   multer.diskStorage({
-  destination: function (req, file, callback) {
-    callback(null, './uploads/videos');
-  },
-  filename: function (req, file, callback) {
-    callback(null, file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1]);
-  }
-});
-
-//prepare filter for the file
-function fileFilter (req, file, cb){
-  var type = file.mimetype;
-  var typeArray = type.split("/");
-  if (typeArray[0] == "video") {
-    cb(null, true);
-  }else {
-    console.log(typeArray[0]);
-    req.fileValidationError = 'uploaded file is not a video';
-    cb(null, false);
-  }
-}
-//initiate multer upload for usage
-var upload = multer({storage: video_storage, fileFilter: fileFilter}).single('video');
-
+var ffmpeg = require('fluent-ffmpeg');
 
 
 const findUserData = (video, users) => {
@@ -148,35 +119,36 @@ const videosApiRoutes = (app) => {
   app.post('/api/videos/upload', isTokenValid, (req, res) => {
 
     upload(req, res, (err) => {
+
       if(req.fileValidationError) {
               return res.json({success: false, message: req.fileValidationError});
         }
       if(err) {
         console.log('Error Occured While uploading');
+        console.log(err);
         return;
       }
-
       var newVideo = Video();
       newVideo.title = req.body.title || '';
       newVideo.description = req.body.description ||'';
       newVideo.ownerId = req.user.username;
       newVideo.category = req.body.category || 'undefined';
       //if thumbnails not defined in request
-      /*if (typeof req.body.thumbnailUrl == "undefined" || req.body.thumbnailUrl == '' || req.body.thumbnailUrl == null){
-        var proc = new ffmpeg(req.file.path)
-        .takeScreenshots({
-        count: 1,
-        timemarks: [ '10' ],//at 10s of the video
-        folder: './uploads/thumbnails',
-        filename: 'thumbnail-%b.png'
-          // number of seconds
-        }, function(err) {
-        console.log('screenshots were saved');
-        });
-      }*/
+      // if (typeof req.body.thumbnailUrl == "undefined" || req.body.thumbnailUrl == '' || req.body.thumbnailUrl == null){
+      //   var proc = new ffmpeg(req.file.path)
+      //   .takeScreenshots({
+      //   count: 1,
+      //   timemarks: [ '10%' ],//at 10s of the video
+      //   folder: './uploads/thumbnails',
+      //   filename: 'thumbnail-%b.png'
+      //     // number of seconds
+      //   }, function(err) {
+      //   console.log('screenshots were saved');
+      //   });
+      // }
       // see ffmpeg lib to generate one
       newVideo.thumbnailUrl = req.body.thumbnailUrl || '';
-      newVideo.url = req.file.path;
+      newVideo.url = req.file.location;
       newVideo.createdAt = Date.now();
       newVideo.updatedAt = Date.now();
       newVideo.save((err, data) => {
