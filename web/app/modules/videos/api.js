@@ -116,6 +116,18 @@ const videosApiRoutes = (app) => {
     });
   });
 
+  app.post('/api/videos/battles/:battleId', isTokenValid, (req, res) =>{
+    const battleId = req.params.battleId || '';
+
+    Battle.findOne({_id: battleId}).then((battle) => {
+      if (!battle) {
+        throw 'Battle already exist';
+      } else return battle;
+    }).then((battle) => {
+      
+    });
+  });
+
   app.post('/api/videos/upload', isTokenValid, (req, res) => {
 
     upload(req, res, (err) => {
