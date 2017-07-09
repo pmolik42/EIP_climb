@@ -111,7 +111,6 @@ const profileApiRoutes = (app) => {
 
   });
 
-<<<<<<< HEAD
   app.post('/api/profile/follow/:username', isTokenValid, (req, res) => {
 
     const username = req.params.username || null;
