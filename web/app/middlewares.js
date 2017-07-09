@@ -14,7 +14,7 @@ const isLoggedIn = (req, res, next) => {
 
 // route middleware to make sure the token is valid
 const isTokenValid = (req, res, next) => {
-
+  console.log("coucou");
   // check header or url parameters or post parameters for token
   let token = req.body.token || req.query.token || req.headers['x-access-token'];
 
@@ -54,7 +54,59 @@ const isTokenValid = (req, res, next) => {
   }
 };
 
+//middleware to handle file uploading
+//aws sdk for multer s3
+const aws = require('aws-sdk');
+
+//multer for upload
+const multer  = require('multer');
+//multer-s3 to upload to aws s3
+const multerS3 = require('multer-s3');
+
+// initialise amazon web service S3 object
+var s3 = new aws.S3()
+
+//initiate multer upload for usage
+//var upload = multer({storage: video_storage, fileFilter: fileFilter}).single('video');
+var upload = multer({
+  storage: multerS3({
+    s3: s3,
+    bucket: 'testclemclimb',
+
+    //if its a video upload also a thumbnail
+    /*shouldTransform: function (req, file, cb) {
+      cb(null, /^video/i.test(file.mimetype) && (typeof req.body.thumbnailUrl == "undefined" || req.body.thumbnailUrl == '' || req.body.thumbnailUrl == null));
+    },
+    transforms: [{
+      id: 'thumbnail',
+      key: function (req, file, cb) {
+        cb(null, file.fieldname + 's/' + 'thumbnail' +  '-' + Date.now() + '.' + 'jpg'
+      },
+      transform: function (req, file, cb) {
+        cb(null, sharp().jpg())
+      }
+    }, {
+      id: 'video',
+      key: function (req, file, cb) {
+        cb(null, file.fieldname + 's/' + file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1])
+      },
+    }]*/
+    key: function (req, file, cb) {
+      cb(null, file.fieldname + 's/' + file.fieldname + '-' + Date.now() + '.' + file.originalname.split('.')[1])
+    }
+  }),
+  fileFilter: function (req, file, cb) {
+      if (RegExp("^" + file.fieldname, "i").test(file.mimetype)){
+        cb(null, true);
+      }
+      else{
+        req.fileValidationError = 'wrong mimetype uploaded';
+        cb(null, false);
+      }
+    }
+});
 	module.exports = {
 	  isLoggedIn : isLoggedIn,
-      isTokenValid : isTokenValid
+      isTokenValid : isTokenValid,
+      upload : upload,
 	};

@@ -7,9 +7,11 @@ const Like = require('../../models/like.js');
 const extend = require('util')._extend;
 
 
-
+ObjectID = require('mongodb').ObjectID;
 
 const isTokenValid = require('../../middlewares.js').isTokenValid;
+
+upload = require('../../middlewares.js').upload.single('image');
 
 const profileApiRoutes = (app) => {
 
@@ -109,6 +111,7 @@ const profileApiRoutes = (app) => {
 
   });
 
+<<<<<<< HEAD
   app.post('/api/profile/follow/:username', isTokenValid, (req, res) => {
 
     const username = req.params.username || null;
@@ -160,6 +163,27 @@ const profileApiRoutes = (app) => {
 
   });
 
+=======
+// change route ????????????????????????????
+  app.post('/api/profile/me/upload', isTokenValid, (req, res) => {
+
+    upload(req, res, (err) => {
+      if(req.fileValidationError) {
+        return res.json({success: false, message: req.fileValidationError});
+      }
+      if(err) {
+        console.log('Error Occured While uploading');
+        console.log(err);
+        return;
+      }
+      User.update({_id: req.user.id}, {$set: {"profile.pictureUrl": req.file.location}}, (err, data) => {
+        if (err)
+          throw err;
+        res.json({success: true, new_picture_url: req.file.location});
+      });
+    });
+  });
+>>>>>>> b4d724e62542378876e6729c9a9d48261e72941a
 };
 
 module.exports = profileApiRoutes;
