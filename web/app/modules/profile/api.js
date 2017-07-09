@@ -109,6 +109,57 @@ const profileApiRoutes = (app) => {
 
   });
 
+  app.post('/api/profile/follow/:username', isTokenValid, (req, res) => {
+
+    const username = req.params.username || null;
+
+    User.findOne({'profile.username': username}).then((user) => {
+      if (!user) {
+        throw 'User does not exist';
+      } else return user;
+    }).then((user) => {
+      Follower.findOne({followerId: req.user.id, userId: user._id}).exec((err, follower) => {
+        if (!follower) {
+          let newFollower = new Follower();
+          newFollower.userId = user._id;
+          newFollower.followerId = req.user.id;
+          newFollower.createdAt = new Date();
+          return newFollower.save();
+        }
+        throw 'User is already followed';
+      });
+    }).then((model) => {
+        res.json({success: true, message: 'Successfully followed'});
+    }).catch((err) => {
+      res.json({success: false, message: err});
+    });
+  });
+
+
+
+  app.delete('/api/profile/follow/:username', isTokenValid, (req, res) => {
+
+      const username = req.params.username || null;
+
+      User.findOne({'profile.username': username}).then((user) => {
+        if (!user) {
+          throw 'User does not exist';
+        } else return user;
+      }).then((user) => {
+        Follower.findOne({followerId: req.user.id, userId: user._id}).exec((err, Follower) => {
+          if (follower) {
+            return follower.remove();
+          }
+          throw 'User is not followed';
+        });
+      }).then((model) => {
+          res.json({success: true, message: 'Successfully unfollowed'});
+      }).catch((err) => {
+        res.json({success: false, message: err});
+      });
+
+  });
+
 };
 
 module.exports = profileApiRoutes;
