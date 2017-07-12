@@ -124,7 +124,20 @@ const videosApiRoutes = (app) => {
         throw 'Battle already exist';
       } else return battle;
     }).then((battle) => {
-      
+      if (battle.videos[0] && battle.videos[1]) {
+          let newBattle = new Battle();
+          newBattle.id = _id;
+        //  newBattle.category = ;
+        //  newBattle.videos = ;
+        //  newBattle.likesCount = ;
+          newBattle.createdAt = new Date();
+          return newBattle.save();
+      }
+        throw 'One of the videos is not valid';
+    }).then((model) => {
+        res.json({success: true, message: 'Battle created successfully'});
+    }).catch((err) => {
+      res.json({success: false, message: err});
     });
   });
 
