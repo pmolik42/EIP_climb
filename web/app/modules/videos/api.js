@@ -116,20 +116,13 @@ const videosApiRoutes = (app) => {
     });
   });
 
-  app.post('/api/videos/battles/:battleId', isTokenValid, (req, res) =>{
-    const battleId = req.params.battleId || '';
+  app.post('/api/videos/battles/battle', isTokenValid, (req, res) => {
 
-    Battle.findOne({_id: battleId}).then((battle) => {
-      if (!battle) {
-        throw 'Battle already exist';
-      } else return battle;
-    }).then((battle) => {
-      if (battle.videos[0] && battle.videos[1]) {
+    if (battle.videos[0] && battle.videos[1]) {
           let newBattle = new Battle();
-          newBattle.id = _id;
           newBattle.category = "Dance";
-          newBattle.videos = {battle.videos[0], battle.videos[1]};
-          newBattle.likesCount = {0, 0};
+          newBattle.videos = [battle.videos[0], battle.videos[1]];
+          newBattle.likesCount = [0, 0];
           newBattle.createdAt = new Date();
           return newBattle.save();
       }
