@@ -127,9 +127,9 @@ const videosApiRoutes = (app) => {
       if (battle.videos[0] && battle.videos[1]) {
           let newBattle = new Battle();
           newBattle.id = _id;
-        //  newBattle.category = ;
-        //  newBattle.videos = ;
-        //  newBattle.likesCount = ;
+          newBattle.category = "Dance";
+          newBattle.videos = {battle.videos[0], battle.videos[1]};
+          newBattle.likesCount = {0, 0};
           newBattle.createdAt = new Date();
           return newBattle.save();
       }
