@@ -162,7 +162,6 @@ const profileApiRoutes = (app) => {
 
   });
 
-=======
 // change route ????????????????????????????
   app.post('/api/profile/me/upload', isTokenValid, (req, res) => {
 
@@ -182,7 +181,6 @@ const profileApiRoutes = (app) => {
       });
     });
   });
->>>>>>> b4d724e62542378876e6729c9a9d48261e72941a
 };
 
 module.exports = profileApiRoutes;
