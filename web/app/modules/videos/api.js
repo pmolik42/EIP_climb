@@ -133,7 +133,7 @@ const videosApiRoutes = (app) => {
         return res.json({success: false, message: "no file suplied"});
       newVideo.title = req.body.title || '';
       newVideo.description = req.body.description ||'';
-      newVideo.ownerId = req.user.username;
+      newVideo.ownerId = req.user.id;
       newVideo.category = req.body.category || 'undefined';
       newVideo.thumbnailUrl = req.body.thumbnailUrl || '';
       newVideo.url = req.file.location;
