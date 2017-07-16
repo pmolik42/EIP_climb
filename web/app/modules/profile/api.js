@@ -174,6 +174,8 @@ const profileApiRoutes = (app) => {
         console.log(err);
         return;
       }
+      if (req.file == undefined)
+        return res.json({success: false, message: "no file suplied"});
       User.update({_id: req.user.id}, {$set: {"profile.pictureUrl": req.file.location}}, (err, data) => {
         if (err)
           throw err;
