@@ -22,6 +22,7 @@ export class SettingsComponent {
 
   logout() {
     this._authService.logout();
+    this._router.navigate(['login']);
   }
 
 }

@@ -1,5 +1,5 @@
 import { Component, AfterViewInit, ElementRef, OnDestroy } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute} from '@angular/router';
 import { AuthService } from './auth.service';
 
 declare var $:any;
@@ -13,9 +13,17 @@ export class AuthComponent implements AfterViewInit {
 
   private email;
   private password;
+  private returnUrl:string;
 
-
-  constructor(private _authService: AuthService, private _router: Router, private el: ElementRef){}
+  constructor(private _authService: AuthService, private _route: ActivatedRoute, private _router: Router, private el: ElementRef){}
+  
+  ngOnInit() {
+        // reset login status
+        this._authService.logout();
+ 
+        // get return url from route parameters or default to '/'
+        this.returnUrl = this._route.snapshot.queryParams['returnUrl'] || '/';
+  }
 
   onSubmit() {
     this._authService.login(this.email, this.password).subscribe((result) => {
