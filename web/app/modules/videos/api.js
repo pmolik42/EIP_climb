@@ -116,24 +116,6 @@ const videosApiRoutes = (app) => {
     });
   });
 
-  app.post('/api/videos/battles/battle', isTokenValid, (req, res) => {
-
-    if (battle.videos[0] && battle.videos[1]) {
-          let newBattle = new Battle();
-          newBattle.category = "Dance";
-          newBattle.videos = [battle.videos[0], battle.videos[1]];
-          newBattle.likesCount = [0, 0];
-          newBattle.createdAt = new Date();
-          return newBattle.save();
-      }
-        throw 'One of the videos is not valid';
-    }).then((model) => {
-        res.json({success: true, message: 'Battle created successfully'});
-    }).catch((err) => {
-      res.json({success: false, message: err});
-    });
-  });
-
   app.post('/api/videos/upload', isTokenValid, (req, res) => {
 
     upload(req, res, (err) => {
@@ -151,20 +133,6 @@ const videosApiRoutes = (app) => {
       newVideo.description = req.body.description ||'';
       newVideo.ownerId = req.user.username;
       newVideo.category = req.body.category || 'undefined';
-      //if thumbnails not defined in request
-      // if (typeof req.body.thumbnailUrl == "undefined" || req.body.thumbnailUrl == '' || req.body.thumbnailUrl == null){
-      //   var proc = new ffmpeg(req.file.path)
-      //   .takeScreenshots({
-      //   count: 1,
-      //   timemarks: [ '10%' ],//at 10s of the video
-      //   folder: './uploads/thumbnails',
-      //   filename: 'thumbnail-%b.png'
-      //     // number of seconds
-      //   }, function(err) {
-      //   console.log('screenshots were saved');
-      //   });
-      // }
-      // see ffmpeg lib to generate one
       newVideo.thumbnailUrl = req.body.thumbnailUrl || '';
       newVideo.url = req.file.location;
       newVideo.createdAt = Date.now();
