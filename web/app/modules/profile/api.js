@@ -183,6 +183,29 @@ const profileApiRoutes = (app) => {
       });
     });
   });
+
+  app.put('/api/profile', isTokenValid, (req, res) => {
+
+    User.findOne({_id: req.user.id}).exec((err, user) => {
+      if (err) return res.json({success: false, message: "Could not find user"});
+
+      if (!user) return res.json({success: false, message: "Could not find user"});
+
+      user.updatedAt = new Date();
+
+      if (req.body.email) user.local.email = req.body.email;
+      if (req.body.username) user.profile.username = req.body.username;
+      if (req.body.firstName) user.profile.firstName = req.body.firstName;
+      if (req.body.lastName) user.profile.lastName = req.body.lastName;
+      if (req.body.bio) user.profile.bio = req.body.bio;
+
+      user.save((err, newUser) => {
+        if (err) return res.json({success: false, message: "Could not update profile"});
+
+        res.json({success: true, message: 'update successful', newUser: user})
+      });
+    });
+  });
 };
 
 module.exports = profileApiRoutes;
