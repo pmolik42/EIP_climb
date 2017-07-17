@@ -208,4 +208,38 @@ const profileApiRoutes = (app) => {
   });
 };
 
+app.get('/api/profile', isTokenValid, (req, res) => {
+  const username = req.query.username || '';
+  var profileUser;
+
+  async.series({
+    user : (cb) => {
+      User.findOne({'profile.username' : username}).select('-local.password').exec((err, user) => {
+        if (err) return cb(err);
+        if (!user) return cb('User not found');
+        profileUser = user;
+        cb(null, user);
+      });
+    },
+    isFollowing : (cb) => {
+      Follower.findOne({userId : profileUser._id, followerId : req.user.id}).exec((err, follower) => {
+        isFollowing = follower == null ? false : true;
+        if (err) return cb(err);
+
+        cb(null, isFollowing);
+      });
+    }
+  }, (err, results) => {
+    if (err) return res.json({success : false, message : 'User not found'});
+
+    res.json({success : true,
+              user : results.user.safeUser(results.user),
+              isOwner : req.user.username == username ? true : false,
+              isFollowing : results.isFollowing
+             });
+  });
+
+});
+};
+
 module.exports = profileApiRoutes;
