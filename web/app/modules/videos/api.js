@@ -10,7 +10,7 @@ const isTokenValid = require('../../middlewares.js').isTokenValid;
 const upload = require('../../middlewares.js').upload.single('video');
 
 //ffmpeg for thumbnails
-var ffmpeg = require('fluent-ffmpeg');
+//var ffmpeg = require('fluent-ffmpeg');
 
 
 const findUserData = (video, users) => {
