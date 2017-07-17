@@ -24,7 +24,7 @@ import { ProfileVideosComponent } from './profile/videos/videos.component';
 import { BookComponent } from './profile/book/book.component';
 import { OverviewComponent } from './settings/overview/overview.component';
 import { SettingsProfileComponent } from './settings/profile/profile.component';
-
+import { UploadComponent } from './upload/upload.component';
 
 @NgModule({
   declarations: [
@@ -40,7 +40,8 @@ import { SettingsProfileComponent } from './settings/profile/profile.component';
     ProfileVideosComponent,
     BookComponent,
     OverviewComponent,
-    SettingsProfileComponent
+    SettingsProfileComponent,
+    UploadComponent
   ],
   imports: [
     BrowserModule,

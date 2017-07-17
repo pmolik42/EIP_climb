@@ -13,6 +13,7 @@ import { BookComponent } from './profile/book/book.component';
 import { OverviewComponent } from './settings/overview/overview.component';
 import { SettingsProfileComponent } from './settings/profile/profile.component';
 
+import { UploadComponent } from './upload/upload.component';
 import { AuthGuard } from './_guards/index';
 
 const appRoutes: Routes = [
@@ -25,6 +26,7 @@ const appRoutes: Routes = [
   //routes
   { path: 'login', component: AuthComponent },
   { path: '', component: NavComponent, canActivate: [AuthGuard], children: [
+    { path: 'upload', component: UploadComponent },
     { path: 'home', component: HomeComponent, children: [
       { path: 'videos', component: VideosFeedComponent },
       { path: 'battles', component: BattlesFeedComponent },

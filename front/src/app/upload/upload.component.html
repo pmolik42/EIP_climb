@@ -1,0 +1,19 @@
+<div class="container">
+<h1>Upload a new video</h1>
+<form #form="ngForm" (submit)="submit(form.value)" class="form col-md-12 center-block">
+ 	<div class="form-group">
+		<label for="video"><b>Video:</b></label>
+		<input id="video" type="file" name="video">
+	</div>
+
+ 	<div class="form-group">
+		<label><b>Title:</b></label>
+		<input id="title" type="text" name="title">
+	</div>
+	<div class="form-group">
+	<label><b>Description:</b></label>
+	<textarea id="description" maxlength=255 placeholder="max 255 characters" name="description"></textarea>
+	</div>
+	<button type="submit" class="btn btn-success">Submit</button>
+</form>
+</div>
