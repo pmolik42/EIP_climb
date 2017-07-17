@@ -187,11 +187,15 @@ public class VideoListAdapter extends RecyclerView.Adapter {
                         videoLikeButton.setImageResource(R.drawable.ic_not_liked);
                         currentVideo.setLikes(currentVideo.getLikes() - 1);
                         currentVideo.setLiked(false);
+                        videoLikeButton.setTag(new ClickEventData(AppConstants.UNLIKE_CLICK, video.getId()));
                     } else {
                         videoLikeButton.setImageResource(R.drawable.ic_liked);
                         currentVideo.setLikes(video.getLikes() + 1);
                         currentVideo.setLiked(true);
+                        videoLikeButton.setTag(new ClickEventData(AppConstants.LIKE_CLICK, video.getId()));
+
                     }
+                    mClickListener.onClick(videoLikeButton);
                     setLikes(currentVideo);
                 }
             });

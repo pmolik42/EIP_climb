@@ -50,6 +50,10 @@ public class BaseFragment extends Fragment implements View.OnClickListener {
             mActivity.pushNewFragment(view);
         if (((ClickEventData)view.getTag()).getClickEvent() == AppConstants.VIDEO_PLAY_CLICK)
             mVideoPlayerManager.playNewVideo(null, (VideoPlayerView) view, ((ClickEventData)view.getTag()).getData());
+        /*if (((ClickEventData)view.getTag()).getClickEvent() == AppConstants.LIKE_CLICK)
+            mVideoPlayerManager.playNewVideo(null, (VideoPlayerView) view, ((ClickEventData)view.getTag()).getData());
+        if (((ClickEventData)view.getTag()).getClickEvent() == AppConstants.UNLIKE_CLICK)
+            mVideoPlayerManager.playNewVideo(null, (VideoPlayerView) view, ((ClickEventData)view.getTag()).getData());*/
 
         //mActivity.playVideo(view, ((ClickEventData)view.getTag()).getData());
     }

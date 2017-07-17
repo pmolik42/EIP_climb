@@ -21,5 +21,8 @@ public final class AppConstants {
     public static final int LIKES_CLICK = 6;
     public static final int COMMENTS_CLICK = 7;
     public static final int PHOTO_CLICK = 8;
+    public static final int UNLIKE_CLICK = 9;
+
+
 
 }

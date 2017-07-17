@@ -131,6 +131,9 @@ public class NavigationActivity extends AppCompatActivity {
                     Log.d(TAG, mStacks.get(position).lastElement().getToolbarTitle());
                     mTitleBar.setText(mStacks.get(position).lastElement().getToolbarTitle());
                     mPosition = position;
+                } else if (position == 2) {
+                    Intent intent = new Intent(mContext, CreateVideoActivity.class);
+                    startActivity(intent);
                 }
 
                 return true;

@@ -233,10 +233,11 @@ public class ProfileFragment extends BaseFragment {
     private Video createVideo(JSONObject object, String username, String pictureUrl) {
         Video video = new Video(object.optString("title"), object.optString("url"));
 
-        video.setLikes(0);
+        video.setId(object.optString("_id"));
+        video.setLikes(object.optInt("likes"));
         video.setViews(0);
         video.setComments(0);
-        video.setLiked(false);
+        video.setLiked(object.optBoolean("isLiked"));
         video.setCategory(object.optString("category"));
         video.setOwnerUsername(username);
         video.setOwnerProfilePicture(pictureUrl.replace("localhost", "10.0.2.2"));
@@ -313,7 +314,7 @@ public class ProfileFragment extends BaseFragment {
         }
 
     }
-    
+
     @Subscribe
     public void onGetJsonDataEvent(final GetJsonDataEvent event) {
         Log.d("PROFILE", "ON A RECU LES DATA");

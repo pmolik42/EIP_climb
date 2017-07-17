@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/path"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Test"
+        android:textSize="22sp"
+        android:gravity="center"/>
+
+    <Button
+        android:id="@+id/browseGallery"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="10dp"
+        style="@style/PassiveButton"
+        android:text="Browse"
+        android:layout_gravity="center"/>
+
+    <EditText
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/videoTitle"
+        style="@style/EditText.Base"
+        android:layout_width="match_parent"
+        android:hint="Title"
+        android:layout_height="25dp" />
+
+    <EditText
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:id="@+id/videoDescription"
+        style="@style/EditText.Base"
+        android:layout_width="match_parent"
+        android:hint="Description"
+        android:layout_height="25dp" />
+
+    <Button
+        android:layout_gravity="center"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        style="@style/ActionButton"
+        android:id="@+id/upload"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Create Video"/>
+
+</LinearLayout>

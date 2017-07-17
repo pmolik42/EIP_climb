@@ -78,8 +78,6 @@ public class NotificationsFragment extends BaseFragment {
     @Override
     public void onDetach() {
         super.onDetach();
-        mBus.unregister(this);
-        mBus.unregister(mClimbManager);
     }
 
     @Override

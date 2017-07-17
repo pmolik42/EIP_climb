@@ -143,10 +143,11 @@ public class HomeFragment extends BaseFragment {
     private Video createVideo(JSONObject object) {
         Video video = new Video(object.optString("title"), object.optString("url"));
 
-        video.setLikes(0);
+        video.setId(object.optString("_id"));
+        video.setLikes(object.optInt("likes"));
         video.setViews(0);
         video.setComments(0);
-        video.setLiked(false);
+        video.setLiked(object.optBoolean("isLiked"));
         video.setCategory(object.optString("category"));
         video.setOwnerUsername(object.optString("ownerUsername"));
         video.setOwnerProfilePicture(object.optString("ownerProfilePicture").replace("localhost", "10.0.2.2"));

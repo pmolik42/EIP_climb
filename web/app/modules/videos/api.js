@@ -159,8 +159,8 @@ const videosApiRoutes = (app) => {
       var newVideo = Video();
       newVideo.title = req.body.title || '';
       newVideo.description = req.body.description ||'';
-      newVideo.ownerId = req.user.username;
-      newVideo.category = req.body.category || 'undefined';
+      newVideo.ownerId = req.user.id;
+      newVideo.category = req.body.category || 'Dance';
       //if thumbnails not defined in request
       /*if (typeof req.body.thumbnailUrl == "undefined" || req.body.thumbnailUrl == '' || req.body.thumbnailUrl == null){
         var proc = new ffmpeg(req.file.path)
