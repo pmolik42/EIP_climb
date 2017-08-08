@@ -3,15 +3,30 @@
     <div class="widget-header">
       <h3 class="widget-caption">Profile</h3>
     </div>
-    <div class="widget-body">
-      <p><span class="label">Photo de profile : </span><br><img class="img-rounded" src="{{user.profile.pictureUrl}}"></p>
-      <p><span class="label">Nom d'utilisateur : </span>{{user.profile.username}}</p>
-      <p><span class="label">Prénom : </span>{{user.profile.firstName}}</p>
-      <p><span class="label">Nom : </span>{{user.profile.lastName}}</p>
-      <p><span class="label">Email : </span>{{user.local.email}}</p>
-      <p><span class="label">Bio : </span><br>{{user.profile.bio}}</p>
+    <span (click)="openNav()">open</span>
+    <div id="myNav" class="overlay">
 
+
+  <!-- Button to close the overlay navigation -->
+  <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+
+<div class="overlay-content">
+  <!-- Overlay content -->
+  <form #form="ngForm">
+    <div class="fileUpload btn btn-default">
+      <span>Upload</span>
+        <input type="file" class="upload" />
     </div>
+    <button type="submit" name="delete" (click)="photoDelete"
+            class="btn btn-success">Supprimer votre photo</button>
+      <button type="button" name="cancel"
+            class="btn btn-success" >Annuler</button>
+  </form>
+</div>
+  </div>
+
+  <!-- Use any element to open/show the overlay navigation menu -->
+
   </div>
   <div class="widget profile">
     <div class="widget-header">

@@ -13,7 +13,7 @@ export class OverviewComponent {
 
   public user = {
     profile: {
-    usernmame: '',
+    usermame: '',
     firstName: '',
     lastName: '',
     pictureUrl: '../../../assets/img/profile_picture.jpg',
@@ -34,5 +34,14 @@ export class OverviewComponent {
         console.log("Authentification failed !");
       }
     });
+  }
+
+  openNav() {
+    document.getElementById("myNav").style.height = "100%";
+}
+
+/* Close when someone clicks on the "x" symbol inside the overlay */
+  closeNav() {
+    document.getElementById("myNav").style.height = "0%";
   }
 }

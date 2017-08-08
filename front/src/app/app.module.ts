@@ -1,6 +1,6 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { HttpModule } from '@angular/http';
 
 import { AuthGuard } from './_guards/index';
@@ -13,6 +13,7 @@ import { AppComponent } from './app.component';
 import { routing } from './app.routing';
 
 import { AuthComponent } from './auth/auth.component';
+import { SignUpComponent } from './signUp/signUp.component';
 import { NavComponent } from './nav/nav.component';
 import { HomeComponent } from './home/home.component';
 import { VideosFeedComponent } from './videos/feed/videos.component';
@@ -30,6 +31,7 @@ import { UploadComponent } from './upload/upload.component';
   declarations: [
     AppComponent,
     AuthComponent,
+    SignUpComponent,
     NavComponent,
     HomeComponent,
     VideosFeedComponent,

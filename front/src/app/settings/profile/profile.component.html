@@ -1,0 +1,86 @@
+<div class="overview">
+  <div class="widget profile">
+    <div class="widget-header">
+      <h3 class="widget-caption">Profile</h3>
+    </div>
+    <div class="widget-body">
+      <div class="profile-photo">
+        <label><b>Photo de profile:</b></label>
+        <a (click)="openNav()"><img class="img-rounded" [src]="url"></a>
+      </div>
+      <form #form="ngForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <br><label><b>Nom d'utilisateur:</b></label>
+        <input [(ngModel)]="user.profile.username" type="text" id="username" name="username">
+      </div>
+      <div class="form-group">
+        <br><label><b>Prénom:</b></label>
+        <input [(ngModel)]="user.profile.firstName" type="text" id="firstName" name="firstName">
+      </div>
+      <div class="form-group">
+        <br><label><b>Nom:</b></label>
+        <input [(ngModel)]="user.profile.lastName" type="text" id="lastName" name="lastName">
+      </div>
+      <div class="form-group">
+        <br><label><b>Sexe:</b></label>
+        <span *ngFor="let gender of genders">
+          <span>{{ gender.label }}</span>
+            <input type="radio" name="gender"
+            [checked]="gender.name === selectedValue"
+            [value]="gender.name"
+            (change)="onGenderChange(gender.name)">
+          </span>
+      </div>
+      <div class="form-group">
+        <br><label><b>Bio:</b></label>
+        <textarea rows="3" cols="30" [(ngModel)]=user.profile.bio id="bio" maxlength=255 placeholder="max 255 characters" name="bio"></textarea>
+      </div>
+        <br><button type="submit" class="btn btn-success">Submit</button>
+    </form>
+
+    </div>
+  </div>
+  <div id="myNav" class="overlay">
+
+
+<!-- Button to close the overlay navigation -->
+<a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
+
+<div class="overlay-content">
+<!-- Overlay content -->
+<form class="photoForm">
+  <div class="fileUpload btn btn-default">
+    <span>Upload</span>
+      <input type="file" id="upload" class="upload" (change)="photoUpload($event)"/>
+  </div>
+</form>
+<form #form="ngForm">
+
+  <button type="submit" name="delete" (click)="photoDelete()"
+          class="btn btn-default">Supprimer votre photo</button>
+    <button type="button" name="cancel"
+          class="btn btn-default" (click)="closeNav()">Annuler</button>
+</form>
+</div>
+</div>
+
+<!-- Use any element to open/show the overlay navigation menu -->
+<span (click)="openNav()">open</span>
+  <div class="widget profile">
+    <div class="widget-header">
+      <h3 class="widget-caption">Comptes Liés</h3>
+    </div>
+    <div class="widget-body">
+      <p>
+        <span class="label">Facebook : </span>Lier son compte Facebook
+        <button class="btn btn-social-icon btn-facebook">
+          <span class="fa fa-facebook"></span>
+        </button></p>
+      <p><span class="label">Google+ : </span>Lier son compte Google+
+        <button class="btn btn-social-icon btn-google">
+          <span class="fa fa-google"></span>
+        </button>
+      </p>
+    </div>
+  </div>
+</div>
