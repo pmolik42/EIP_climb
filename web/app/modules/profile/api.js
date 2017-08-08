@@ -198,6 +198,7 @@ const profileApiRoutes = (app) => {
       if (req.body.firstName) user.profile.firstName = req.body.firstName;
       if (req.body.lastName) user.profile.lastName = req.body.lastName;
       if (req.body.bio) user.profile.bio = req.body.bio;
+      if (req.body.gender) user.profile.gender = req.body.gender;
 
       user.save((err, newUser) => {
         if (err) return res.json({success: false, message: "Could not update profile"});
@@ -206,6 +207,7 @@ const profileApiRoutes = (app) => {
       });
     });
   });
+  
   app.get('/api/profile', isTokenValid, (req, res) => {
     const username = req.query.username || '';
     var profileUser;
