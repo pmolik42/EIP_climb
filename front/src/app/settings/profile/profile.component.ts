@@ -84,7 +84,7 @@ constructor(private _service: ProfileService, private _http: Http, private route
           reader.readAsDataURL(event.target.files[0]);
         }
 
-          this.photoFile = event.target.files;
+          this.photoFile = event.target.files[0]  ;
           this.isChanged = true;
 }
 
@@ -100,10 +100,12 @@ constructor(private _service: ProfileService, private _http: Http, private route
       console.log(this.photoFile);
       console.log(this.user.profile.pictureUrl);
       let headers = new Headers();
+      let picture = new FormData();
 
+      picture.append('image', this.photoFile)
       headers.append('x-access-token', localStorage.getItem("token"));
       //headers.append('Content-Type', 'multipart/form-data');
-      this._http.post(this.baseUrl + "/profile/me/upload", this.photoFile, {headers: headers})
+      this._http.post(this.baseUrl + "/profile/me/upload", picture, {headers: headers})
       .map((res:Response) => res.json()).subscribe(
                   //map the success function and alert the response
                    (success) => {
