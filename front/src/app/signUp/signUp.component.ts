@@ -4,6 +4,8 @@ import { SignUpService } from './signUp.service';
 import {NgForm} from '@angular/forms';
 
 declare var $:any;
+declare var gapi:any;
+declare var FB:any;
 
 @Component({
   selector : 'app-signUp',
@@ -23,8 +25,64 @@ export class SignUpComponent implements AfterViewInit {
                     {"label": "Female", "name": "female"},
                     {"label": "Other", "name": "other"}
                     ]
+  public auth2: any;
 
-constructor(private _signUpService: SignUpService, private _route: ActivatedRoute, private _router: Router, private el: ElementRef){}
+constructor(private _signUpService: SignUpService, private _route: ActivatedRoute, private _router: Router, private el: ElementRef){
+  FB.init({
+    appId      : '1120118441421753',
+    cookie     : true,
+    xfbml      : true,
+    version    : 'v2.8'
+  });
+  FB.AppEvents.logPageView();
+}
+
+onFacebookLoginClick() {
+  this._signUpService.facebookHandler();
+
+}
+
+onFacebookLogout() {
+    FB.logout(function(response) {
+    // user is now logged out
+  });
+}
+
+statusChangeCallback(resp) {
+      if (resp.status === 'connected') {
+          // connect here with your server for facebook login by passing access token given by facebook
+      } else {
+
+      }
+}
+
+googleInit() {
+  gapi.load('auth2', () => {
+    this.auth2 = gapi.auth2.init({
+      client_id: '668607930475-f9eh3cod33letpot7l3heepv0178t3ig.apps.googleusercontent.com',
+      cookiepolicy: 'single_host_origin',
+      scope: 'profile email'
+    });
+    this.attachSignin(document.getElementById('googleBtn'));
+  });
+}
+
+attachSignin(element) {
+  this.auth2.attachClickHandler(element, {},
+    (googleUser) => {
+
+        this._signUpService.googleHandler(googleUser).subscribe((result) => {
+          if (result.success) {
+            this._router.navigateByUrl('/home/videos');
+          } else {
+            console.log("Registration failed !");
+          }
+        });
+
+    }, (error) => {
+      alert(JSON.stringify(error, undefined, 2));
+    });
+}
 
 onSubmit(f: NgForm) {
   this._signUpService.signUp(this.username, this.email, this.password, this.confirmPassword, this.gender).subscribe((result) => {
@@ -41,6 +99,10 @@ onGenderChange(gender) {
 }
 
   ngAfterViewInit() {
+
+    this.googleInit();
+
+
 
     $.backstretch([
       [
@@ -81,6 +143,13 @@ onGenderChange(gender) {
       setTimeout(function() {
         $('#question-icon').mouseout();
       }, 5000);
+    });
+  }
+
+  ngOnInit() {
+    FB.getLoginStatus(response => {
+        this.statusChangeCallback(response);
+        console.log(response.authResponse.accessToken );
     });
   }
 

@@ -41,27 +41,13 @@
                                     <hr class="login-form-hr">
                                     <div class="row" style="margin: 10px 0;">
                                         <div class="col-xs-4" style="padding: 0;">
-                                            <button class="btn btn-social-icon btn-lg btn-facebook hidden-xs">
-                                                <span class="fa fa-facebook"></span>
-                                            </button>
-                                            <button class="btn btn-social-icon btn-facebook visible-xs">
+                                            <button type="button" class="btn btn-social-icon btn-lg btn-facebook hidden-xs" (click)="onFacebookLoginClick()">
                                                 <span class="fa fa-facebook"></span>
                                             </button>
                                         </div>
-                                        <div class="col-xs-4 on-center-col" style="padding: 0;">
-                                            <button class="btn btn-social-icon btn-lg btn-google hidden-xs">
+                                        <div class="col-xs-4 on-right-col" style="padding: 0; float: right;">
+                                            <button type="button" class="btn btn-social-icon btn-lg btn-google hidden-xs" id="googleBtn">
                                                 <span class="fa fa-google"></span>
-                                            </button>
-                                            <button class="btn btn-social-icon btn-google visible-xs">
-                                                <span class="fa fa-google"></span>
-                                            </button>
-                                        </div>
-                                        <div class="col-xs-4 on-right-col" style="padding: 0;">
-                                            <button class="btn btn-social-icon btn-lg btn-twitter hidden-xs">
-                                                <span class="fa fa-twitter"></span>
-                                            </button>
-                                            <button class="btn btn-social-icon btn-twitter visible-xs">
-                                                <span class="fa fa-twitter"></span>
                                             </button>
                                         </div>
                                     </div>

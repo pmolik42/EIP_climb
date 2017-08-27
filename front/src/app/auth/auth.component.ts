@@ -3,6 +3,8 @@ import { Router, ActivatedRoute} from '@angular/router';
 import { AuthService } from './auth.service';
 
 declare var $:any;
+declare var gapi:any;
+declare var FB: any;
 
 @Component({
   selector : 'app-auth',
@@ -15,14 +17,72 @@ export class AuthComponent implements AfterViewInit {
   private password;
   private returnUrl:string;
 
-  constructor(private _authService: AuthService, private _route: ActivatedRoute, private _router: Router, private el: ElementRef){}
-  
+  public auth2: any;
+
+  constructor(private _authService: AuthService, private _route: ActivatedRoute, private _router: Router, private el: ElementRef){
+    FB.init({
+      appId      : '1120118441421753',
+      cookie     : true,
+      xfbml      : true,
+      version    : 'v2.8'
+    });
+    FB.AppEvents.logPageView();
+  }
+
+  onFacebookLoginClick() {
+        FB.login();
+}
+
+  statusChangeCallback(resp) {
+        if (resp.status === 'connected') {
+            // connect here with your server for facebook login by passing access token given by facebook
+        }else if (resp.status === 'not_authorized') {
+
+        }else {
+
+        }
+}
+
+googleInit() {
+  gapi.load('auth2', () => {
+    this.auth2 = gapi.auth2.init({
+      client_id: '668607930475-f9eh3cod33letpot7l3heepv0178t3ig.apps.googleusercontent.com',
+      cookiepolicy: 'single_host_origin',
+      scope: 'profile email'
+    });
+    this.attachSignin(document.getElementById('googleBtn'));
+  });
+}
+
+attachSignin(element) {
+  this.auth2.attachClickHandler(element, {},
+    (googleUser) => {
+
+      let profile = googleUser.getBasicProfile();
+      console.log('Token || ' + googleUser.getAuthResponse().id_token);
+      console.log('ID: ' + profile.getId());
+      console.log('Name: ' + profile.getName());
+      console.log('Image URL: ' + profile.getImageUrl());
+      console.log('Email: ' + profile.getEmail());
+      //YOUR CODE HERE
+
+
+    }, (error) => {
+      alert(JSON.stringify(error, undefined, 2));
+    });
+}
+
+
   ngOnInit() {
         // reset login status
         this._authService.logout();
- 
+
         // get return url from route parameters or default to '/'
         this.returnUrl = this._route.snapshot.queryParams['returnUrl'] || '/';
+
+        FB.getLoginStatus(response => {
+            this.statusChangeCallback(response);
+        });
   }
 
   onSubmit() {
@@ -48,6 +108,8 @@ export class AuthComponent implements AfterViewInit {
     }
 
   ngAfterViewInit() {
+
+   this.googleInit();
 
     $.backstretch([
       [

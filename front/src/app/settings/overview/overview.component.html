@@ -1,32 +1,17 @@
+
 <div class="overview">
   <div class="widget profile">
     <div class="widget-header">
       <h3 class="widget-caption">Profile</h3>
     </div>
-    <span (click)="openNav()">open</span>
-    <div id="myNav" class="overlay">
+    <div id="fb-root"></div>
+    <div class="g-signin2" data-onsuccess="onSignIn"></div>
 
-
-  <!-- Button to close the overlay navigation -->
-  <a href="javascript:void(0)" class="closebtn" (click)="closeNav()">&times;</a>
-
-<div class="overlay-content">
-  <!-- Overlay content -->
-  <form #form="ngForm">
-    <div class="fileUpload btn btn-default">
-      <span>Upload</span>
-        <input type="file" class="upload" />
-    </div>
-    <button type="submit" name="delete" (click)="photoDelete"
-            class="btn btn-success">Supprimer votre photo</button>
-      <button type="button" name="cancel"
-            class="btn btn-success" >Annuler</button>
-  </form>
-</div>
-  </div>
-
-  <!-- Use any element to open/show the overlay navigation menu -->
-
+    <div class="fb-login-button" data-max-rows="1" data-size="medium" data-button-type="login_with" data-show-faces="false" data-auto-logout-link="false" data-use-continue-as="false"></div>
+<button class="btn btn-social-icon btn-google" id="googleBtn"><span class="fa fa-google"></span></button>
+<button class="btn btn-social-icon btn-facebook" id="facebookBtn">
+  <span class="fa fa-facebook"></span>
+</button>
   </div>
   <div class="widget profile">
     <div class="widget-header">

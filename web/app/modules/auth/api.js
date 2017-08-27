@@ -76,6 +76,47 @@ const authApiRoutes = (app) => {
 
 	});
 
+
+// process the google user creation
+app.post('api/register/google', (req, res) => {
+
+	let userInfos = {
+		username : req.body.name || '',
+		email: req.body.email || '',
+		pictureUrl: req.body.pictureUrl,
+		idToken: req.body.idToken
+	};
+	console.console.log(userInfos);
+	console.log('Creating the new User');
+	var newUser = new User();
+
+	newUser.local.email = userInfos.email;
+	newUser.profile.username = userInfos.username;
+	newUser.profile.firstName = '';
+	newUser.profile.lastName = '';
+	newUser.profile.bio = '';
+	newUser.profile.pictureUrl = userInfos.pictureUrl;
+	newUser.profile.gender = '';
+	newUser.profile.verified = false;
+	newUser.createdAt = new Date();
+	newUser.updatedAt = new Date();
+
+	newUser.save((err, data) => {
+		if (err)
+			throw err;
+		return callback(null, data);
+	});
+
+	var token = userInfos.idToken;
+	// return the information including token as JSON
+	res.json({
+		success: true,
+		message: 'Registration successful',
+		user: user.safeUser(user),
+		token: token
+	});
+});
+
 	// LOGOUT
 	app.get('/api/logout', (req, res) => {
 
