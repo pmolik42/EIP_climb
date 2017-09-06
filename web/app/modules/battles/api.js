@@ -74,9 +74,9 @@ app.get('/api/battles/feed', isTokenValid, (req, res) => {
 
 
     ], (err, results) => {
-      if (err) return res.json({success : false, message : 'No videos found'});
+      if (err) return res.json({success : false, message : 'No battles found'});
 
-      res.json({success : true, videos : results});
+      res.json({success : true, battles : results});
     });
 
 
