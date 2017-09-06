@@ -48,16 +48,16 @@ const videosApiRoutes = (app) => {
         let usersId = followers;
         usersId.push(req.user.id);
         feedVideosUsers.push({profile: {username : req.user.username, pictureUrl : req.user.pictureUrl}, _id: req.user.id});
-        Video.find({ownerId : { $in : usersId}}).limit(20).sort('-createdAt').exec((err, results) => {
+        Video.find({ownerId : { $in : usersId}}).limit(20).sort('-createdAt').exec((err, videos) => {
             if (err) return cb(err);
-            cb(null, results);
-          }); 
+            cb(null, videos);
+          });
       },
       (videos, cb) => {
         async.map(videos, (video, callback) => {
           Like.find({videoId: video._id}).exec((err, likes) => {
             if (err) return callback(err);
-            var userVideo = video;
+            var userVideo = video.toObject();
             userVideo.likes = likes.length;
             Like.findOne({userId: req.user.id, videoId: video._id}).exec((err, like) => {
               if (err) return callback(err);

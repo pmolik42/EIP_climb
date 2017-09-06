@@ -79,9 +79,7 @@ const profileApiRoutes = (app) => {
         Video.find({ownerId : profileUser._id}).sort('-createdAt').limit(20).exec((err, videos) => {
           if (err) return cb(err);
           async.map(videos, (video, callback) => {
-            let videoAdditionalData = video.copyVideo(video);
-            videoAdditionalData.ownerUsername = username;
-            videoAdditionalData.ownerProfilePicture = profileUser.profile.pictureUrl;
+            let videoAdditionalData = video.toObject();
             Like.find({videoId: video._id}).exec((err, likes) => {
               if (err) return callback(err);
               videoAdditionalData.likes = likes.length;
