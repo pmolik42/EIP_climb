@@ -13,6 +13,50 @@
   <span class="fa fa-facebook"></span>
 </button>
   </div>
+  <h2>Modal Example</h2>
+  <!-- Trigger the modal with a button -->
+  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">Tu ouvre ici fdp</button>
+
+  <!-- Modal -->
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+      <!-- Modal content-->
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h1 class="text-center">Upload a new video</h1>
+        </div>
+        <form #form="ngForm" (submit)="submit(form.value)" class="form col-md-12 center-block">
+
+        <div class="modal-body">
+             	<div class="form-group text-center">
+                <label class="btn btn-primary" for="video">
+                <input id="video" type="file" name="video" style="display:none"
+                onchange="$('#upload-file-inf').html(this.files[0].name)">
+                Choose your file
+                </label>
+                <span class='label label-info' id="upload-file-info"></span>
+            	</div>
+
+             	<div class="form-group text-center">
+            		<label><b>Title:</b></label>
+            		<input class="form-control" id="title" type="text" name="title">
+            	</div>
+            	<div class="form-group">
+            	<label><b>Description:</b></label>
+            	<textarea class="form-control" id="description" maxlength=255 placeholder="max 255 characters" name="description"></textarea>
+            	</div>
+            	<div class="text-center"><button type="submit" class="btn btn-success">Submit</button></div>
+        </div>
+      </form>
+
+        <div class="modal-footer">
+        </div>
+      </div>
+
+    </div>
+  </div>
   <div class="widget profile">
     <div class="widget-header">
       <h3 class="widget-caption">Comptes Liés</h3>
