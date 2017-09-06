@@ -60,9 +60,7 @@ const profileApiRoutes = (app) => {
                 isFollowing : results.isFollowing
                });
     });
-
   });
-
   app.get('/api/profile/:username/videos', isTokenValid, (req, res) => {
 
     const username = req.params.username || null;

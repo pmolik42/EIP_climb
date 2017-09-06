@@ -48,20 +48,10 @@ const videosApiRoutes = (app) => {
         let usersId = followers;
         usersId.push(req.user.id);
         feedVideosUsers.push({profile: {username : req.user.username, pictureUrl : req.user.pictureUrl}, _id: req.user.id});
-        Video.find({ownerId : { $in : usersId}}).limit(20).sort('-createdAt').exec((err, videos) => {
-          if (err) return cb(err);
-          async.map(videos, (video, callback) => {
-            const user = findUserData(video, feedVideosUsers);
-            let newVideo = video.copyVideo(video);
-            newVideo.ownerUsername = user.username;
-            newVideo.ownerProfilePicture = user.profilePicture;
-            callback(null, newVideo);
-          }, (err, results) => {
+        Video.find({ownerId : { $in : usersId}}).limit(20).sort('-createdAt').exec((err, results) => {
             if (err) return cb(err);
             cb(null, results);
-          });
-
-        });
+          }); 
       },
       (videos, cb) => {
         async.map(videos, (video, callback) => {
@@ -134,6 +124,7 @@ const videosApiRoutes = (app) => {
       newVideo.title = req.body.title || '';
       newVideo.description = req.body.description ||'';
       newVideo.ownerId = req.user.id;
+      newVideo.owner = req.user.id;
       newVideo.category = req.body.category || 'undefined';
       newVideo.thumbnailUrl = req.body.thumbnailUrl || '';
       newVideo.url = req.file.location;
