@@ -30,47 +30,51 @@ export class AuthComponent implements AfterViewInit {
   }
 
   onFacebookLoginClick() {
-        FB.login();
-}
+    this._authService.facebookHandler();
+
+  }
+
+  onFacebookLogout() {
+      FB.logout(function(response) {
+      // user is now logged out
+    });
+  }
 
   statusChangeCallback(resp) {
         if (resp.status === 'connected') {
             // connect here with your server for facebook login by passing access token given by facebook
-        }else if (resp.status === 'not_authorized') {
-
-        }else {
+        } else {
 
         }
-}
+  }
 
-googleInit() {
-  gapi.load('auth2', () => {
-    this.auth2 = gapi.auth2.init({
-      client_id: '668607930475-f9eh3cod33letpot7l3heepv0178t3ig.apps.googleusercontent.com',
-      cookiepolicy: 'single_host_origin',
-      scope: 'profile email'
+  googleInit() {
+    gapi.load('auth2', () => {
+      this.auth2 = gapi.auth2.init({
+        client_id: '668607930475-f9eh3cod33letpot7l3heepv0178t3ig.apps.googleusercontent.com',
+        cookiepolicy: 'single_host_origin',
+        scope: 'profile email'
+      });
+      this.attachSignin(document.getElementById('googleBtn'));
     });
-    this.attachSignin(document.getElementById('googleBtn'));
-  });
-}
+  }
 
-attachSignin(element) {
-  this.auth2.attachClickHandler(element, {},
-    (googleUser) => {
+  attachSignin(element) {
+    this.auth2.attachClickHandler(element, {},
+      (googleUser) => {
+        console.log('Before google')
+          this._authService.googleHandler(googleUser).subscribe((result) => {
+            if (result.success) {
+              this._router.navigateByUrl('/home/videos');
+            } else {
+              console.log("Registration failed !");
+            }
+          });
 
-      let profile = googleUser.getBasicProfile();
-      console.log('Token || ' + googleUser.getAuthResponse().id_token);
-      console.log('ID: ' + profile.getId());
-      console.log('Name: ' + profile.getName());
-      console.log('Image URL: ' + profile.getImageUrl());
-      console.log('Email: ' + profile.getEmail());
-      //YOUR CODE HERE
-
-
-    }, (error) => {
-      alert(JSON.stringify(error, undefined, 2));
-    });
-}
+      }, (error) => {
+        alert(JSON.stringify(error, undefined, 2));
+      });
+  }
 
 
   ngOnInit() {

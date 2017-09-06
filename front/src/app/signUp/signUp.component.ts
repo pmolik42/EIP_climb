@@ -74,6 +74,7 @@ attachSignin(element) {
         this._signUpService.googleHandler(googleUser).subscribe((result) => {
           if (result.success) {
             this._router.navigateByUrl('/home/videos');
+            //window.location.reload();
           } else {
             console.log("Registration failed !");
           }

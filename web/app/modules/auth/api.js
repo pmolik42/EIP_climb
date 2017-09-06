@@ -3,6 +3,7 @@ const config = require('../../../config/config.js');
 
 const User = require('../../models/user.js');
 const signup = require('./signup.js');
+const googleSignup = require('./googleSignup.js')
 
 const isTokenValid = require('../../middlewares.js').isTokenValid;
 
@@ -48,73 +49,173 @@ const authApiRoutes = (app) => {
 
 	// process the signup form
 	app.post('/api/register', (req, res) => {
+		// Google signup
+		if (req.body.route == 'google') {
 
-		let userInfos = {
-			username: req.body.username || '',
-			email: req.body.email || '',
-			password: req.body.password,
-			confirmPassword: req.body.confirmPassword
-		};
+			let userInfos = {
+				username : req.body.name || '',
+				email: req.body.email || '',
+				pictureUrl: req.body.pictureUrl
+			};
 
-		signup(userInfos, true, (error, user, data) => {
-			if (error || !user) {
-				res.json( { success: false, message: data } );
-			} else {
-        var token = jwt.sign(user, app.get('secret'), {
-          expiresIn: '7d' // expires in 7 days
-        });
+			User.findOne( { $or: [ {'local.email' : userInfos.email }, {'profile.username' : userInfos.username } ] }, function(err, user) {
+		      // if there are any errors, return the error before anything else
+		      var messages = {
+		        errors: {
+		          username : '',
+		          email: ''
+		        }
+		      };
 
-        // return the information including token as JSON
-        res.json({
-          success: true,
-          message: 'Registration successful',
-          user: user.safeUser(user),
-          token: token
-        });
-			}
-		});
+		      if (err)
+		        return callback(err);
 
+		      // if user is found, return the message
+		      if (user) {
+		        if (user.local.email == userInfos.email) {
+		          messages.errors.email = 'This account already exists.';
+							var token = jwt.sign(user, app.get('secret'), {
+								expiresIn: '7d' // expires in 7 days
+							});
+
+
+							// return the information including token as JSON
+							res.json({
+								success: true,
+								message: 'Authentication successful',
+								token: token,
+								user: user.safeUser(user)
+							});
+		        }
+					}
+					else {
+						googleSignup(userInfos, true, (error, user, data) => {
+							if (error || !user) {
+								res.json( { success: false, message: data } );
+							} else {
+								var token = jwt.sign(user, app.get('secret'), {
+									expiresIn: '7d' // expires in 7 days
+								});
+
+								// return the information including token as JSON
+								res.json({
+									success: true,
+									message: 'Registration successful',
+									user: user.safeUser(user),
+									token: token
+								});
+							}
+						});
+					}
+		  });
+
+
+
+		}
+
+		// Facebook signup
+		else if (req.body.route == 'facebook') {
+
+			let userInfos = {
+				username : req.body.name || '',
+				firstName: req.body.firstName || '',
+				lastName: req.body.lastName || '',
+				email: req.body.email || '',
+				gender: req.body.email || '',
+				pictureUrl: req.body.pictureUrl
+			};
+
+			User.findOne( { $or: [ {'local.email' : userInfos.email }, {'profile.username' : userInfos.username } ] }, function(err, user) {
+		      // if there are any errors, return the error before anything else
+		      var messages = {
+		        errors: {
+		          username : '',
+		          email: ''
+		        }
+		      };
+
+		      if (err)
+		        return callback(err);
+
+		      // if user is found, return the message
+		      if (user) {
+		        if (user.local.email == userInfos.email) {
+		          messages.errors.email = 'This account already exists.';
+							var token = jwt.sign(user, app.get('secret'), {
+								expiresIn: '7d' // expires in 7 days
+							});
+
+
+							// return the information including token as JSON
+							res.json({
+								success: true,
+								message: 'Authentication successful',
+								token: token,
+								user: user.safeUser(user)
+							});
+		        }
+					}
+					else {
+						facebookSignup(userInfos, true, (error, user, data) => {
+							if (error || !user) {
+								res.json( { success: false, message: data } );
+							} else {
+								var token = jwt.sign(user, app.get('secret'), {
+									expiresIn: '7d' // expires in 7 days
+								});
+
+								// return the information including token as JSON
+								res.json({
+									success: true,
+									message: 'Registration successful',
+									user: user.safeUser(user),
+									token: token
+								});
+							}
+						});
+					}
+		  });
+
+
+
+
+		}
+
+		// Regular signup
+		else {
+			let userInfos = {
+				username: req.body.username || '',
+				email: req.body.email || '',
+				password: req.body.password,
+				confirmPassword: req.body.confirmPassword
+			};
+
+			signup(userInfos, true, (error, user, data) => {
+				if (error || !user) {
+					res.json( { success: false, message: data } );
+				} else {
+					var token = jwt.sign(user, app.get('secret'), {
+						expiresIn: '7d' // expires in 7 days
+					});
+
+					// return the information including token as JSON
+					res.json({
+						success: true,
+						message: 'Registration successful',
+						user: user.safeUser(user),
+						token: token
+					});
+				}
+			});
+
+		}
 	});
 
 
 // process the google user creation
 app.post('api/register/google', (req, res) => {
 
-	let userInfos = {
-		username : req.body.name || '',
-		email: req.body.email || '',
-		pictureUrl: req.body.pictureUrl,
-		idToken: req.body.idToken
-	};
-	console.console.log(userInfos);
-	console.log('Creating the new User');
-	var newUser = new User();
 
-	newUser.local.email = userInfos.email;
-	newUser.profile.username = userInfos.username;
-	newUser.profile.firstName = '';
-	newUser.profile.lastName = '';
-	newUser.profile.bio = '';
-	newUser.profile.pictureUrl = userInfos.pictureUrl;
-	newUser.profile.gender = '';
-	newUser.profile.verified = false;
-	newUser.createdAt = new Date();
-	newUser.updatedAt = new Date();
-
-	newUser.save((err, data) => {
-		if (err)
-			throw err;
-		return callback(null, data);
-	});
-
-	var token = userInfos.idToken;
-	// return the information including token as JSON
-	res.json({
-		success: true,
-		message: 'Registration successful',
-		user: user.safeUser(user),
-		token: token
-	});
 });
 
 	// LOGOUT
