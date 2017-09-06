@@ -85,7 +85,7 @@ const profileApiRoutes = (app) => {
             Like.find({videoId: video._id}).exec((err, likes) => {
               if (err) return callback(err);
               videoAdditionalData.likes = likes.length;
-              Like.findOne({userId: req.user.id, videoId: videoAdditionalData._id}).exec((err, like) => {
+              Like.findOne({userId: req.user.id, videoId: video._id}).exec((err, like) => {
                 if (err) return callback(err);
                 videoAdditionalData.isLiked = like ? true : false;
                 callback(null, videoAdditionalData);
@@ -102,8 +102,8 @@ const profileApiRoutes = (app) => {
 
       res.json({success : true,
                 videos : results.videos,
-                username : username,
-                userProfilePicture : profileUser.profile.pictureUrl
+                username : results.videos[0].ownerId.profile.username,
+                userProfilePicture : results.videos[0].ownerId.pictureUrl
                });
     });
 
