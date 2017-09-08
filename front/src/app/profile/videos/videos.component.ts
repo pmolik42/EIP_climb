@@ -18,8 +18,6 @@ export class ProfileVideosComponent implements AfterViewInit {
     this._videosService.getProfileVideos().subscribe((result) => {
       if (result.success) {
         this.videos = result.videos;
-        this.userProfilePicture = result.userProfilePicture;
-        this.ownerUsername = result.username;
       } else {
         console.log('Videos profile failed');
       }
