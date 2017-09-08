@@ -7,6 +7,7 @@ import { AuthGuard } from './_guards/index';
 import { AuthService } from './auth/auth.service';
 import { ProfileService } from './profile/profile.service';
 import { VideosService } from './videos/videos.service';
+import { BattlesService } from './battles/battles.service';
 
 
 import { AppComponent } from './app.component';
@@ -55,7 +56,8 @@ import { UploadComponent } from './upload/upload.component';
     AuthGuard,
     AuthService,
     ProfileService,
-    VideosService
+    VideosService,
+    BattlesService
   ],
   bootstrap: [AppComponent]
 })
