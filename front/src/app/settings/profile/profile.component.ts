@@ -5,11 +5,14 @@ import { Router } from '@angular/router';
 import {NgForm} from '@angular/forms';
 import { environment } from '../../../environments/environment';
 
+declare var jQuery:any;
+
 @Component({
   selector : 'app-settings-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.css']
 })
+
 export class SettingsProfileComponent {
 
   private baseUrl = environment.apiUrl;
@@ -73,7 +76,7 @@ constructor(private _service: ProfileService, private _http: Http, private route
 
   photoUpload(event) {
 
-    this.closeNav();
+    jQuery("#myModal").modal("hide");
     if (event.target.files && event.target.files[0]) {
         var reader = new FileReader();
 
