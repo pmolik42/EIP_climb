@@ -17,7 +17,6 @@ var battleSchema = mongoose.Schema({
     		type: mongoose.Schema.Types.ObjectId,
         	ref: 'User'
     	},
-		votes : Number,
 	},
   video_2 : {
   		video : {
@@ -28,7 +27,6 @@ var battleSchema = mongoose.Schema({
     		type: mongoose.Schema.Types.ObjectId,
         	ref: 'User'
     	},
-  		votes : Number,
 	},
   createdAt : Date
 

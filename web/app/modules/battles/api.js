@@ -5,7 +5,7 @@ const Video = require('../../models/video.js');
 const Follower = require('../../models/follower.js');
 const Like = require('../../models/like.js');
 const Battle = require ('../../models/battle.js');
-
+const Vote = require('../../models/votes.js');
 
 const isTokenValid = require('../../middlewares.js').isTokenValid;
 const upload = require('../../middlewares.js').upload.single('video');
@@ -61,16 +61,44 @@ app.get('/api/battles/feed', isTokenValid, (req, res) => {
         Battle.find({ $or : [ 
                         {'video_1.author' : { $in : usersId}}, 
                         {'video_2.author' : { $in : usersId}}]
-                         }).limit(20).sort('-createdAt').exec((err, results) => {
+                         }).limit(20).sort('-createdAt').exec((err, battles) => {
           if (err) {
             console.log(typeof usersId[0]);
             console.log(err);
 
             return cb(err);
           }
-          cb(null, results);
+          cb(null, battles);
         });
       },
+      (battles, cb) => {
+        async.map(battles, (battle, callback) => {
+          Vote.find({battleId: battle._id}).exec((err, votes) => {
+            if (err) return callback(err);
+            console.log(votes.filter(function (el) {return el.video == false}));
+            var userBattle = battle.toObject();
+            userBattle.video_1.votes = votes.filter(function (el) {return el.video == 1}).length;
+            userBattle.video_2.votes = votes.filter(function (el) {return el.video == 2}).length;
+
+            Vote.findOne({userId: req.user.id, battleId: battle._id}).exec((err, vote) => {
+              if (err) return callback(err);
+              if (vote){
+                userBattle.video_1.isVoted = vote.video == 1 ? true : false;  
+                userBattle.video_2.isVoted = vote.video == 2 ? true : false;  
+              }
+              else{
+                userBattle.video_1.isVoted = false;
+                userBattle.video_2.isVoted = false;
+              }
+              callback(null, userBattle);
+            });
+
+          });
+        }, (err, results) => {
+          if (err) return cb(err);
+          cb(null, results);
+        });
+      }
 
 
     ], (err, results) => {
@@ -108,9 +136,52 @@ app.get('/api/battles/feed', isTokenValid, (req, res) => {
           });
         });
         
-        //console.log(newBattle)
-        
     }
+  });
+
+  app.post('/api/battles/:battleId/vote', isTokenValid, (req, res) => {
+    const battleId = req.params.battleId || '';
+    const video = req.body.vote || null;
+
+    console.log(video);
+    Battle.findOne({_id: battleId}).then((battle) => {
+      if (!battle) {
+        throw 'Battle does not exist';
+      } else return battle;
+    }).then((battle) => {
+      Vote.findOneAndUpdate({battleId: battle._id, userId: req.user.id}, {video: video, createdAt: new Date()}, {new: true, upsert:true}).exec((err, vote) => {
+        if (err) return res.json({success: false, message: err});
+        return res.json({success:true, vote: vote})
+      });
+    }).then((model) => {
+        res.json({success: true, message: 'Successfully liked'});
+    }).catch((err) => {
+      res.json({success: false, message: err});
+    });
+  });
+
+  app.delete('/api/battles/:battleId/vote', isTokenValid, (req, res) => {
+    const battleId = req.params.battleId || '';
+
+    Battle.findOne({_id: battleId}).then((battle) => {
+      if (!battle) {
+        console.log("not exist");
+        throw 'Battle does not exist';
+      } else return battle;
+    }).then((battle) => {
+      console.log("phase 2");
+      Vote.findOne({battleId: battle._id, userId: req.user.id}).exec((err, vote) => {
+        if (vote) {
+          return vote.remove();
+        }
+        console.log("didnt vote");
+        throw 'You didnt vote for this battle';
+      });
+    }).then((model) => {
+        res.json({success: true, message: 'Successfully disliked'});
+    }).catch((err) => {
+      res.json({success: false, message: err});
+    });
   });
 };
 
