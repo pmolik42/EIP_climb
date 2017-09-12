@@ -4,3 +4,7 @@ web/data/
 .DS_Store
 **/nbproject
 web/uploads/
+web/public/videos/
+
+# Android (Android has its own git now)
+android/
