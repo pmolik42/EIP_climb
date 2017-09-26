@@ -7,14 +7,14 @@ import 'rxjs/add/operator/map';
 import localStorage from 'localStorage';
 
 @Injectable()
-export class BattlesService {
+export class VideoService {
 
   private baseUrl = environment.apiUrl;
 
   constructor(
     private _http: Http){}
 
-  voteBattle(battle: any, vote: any) {
+  likeVideo(video: any) {
     let headers = new Headers();
 
     headers.append('Content-Type', 'application/json');
@@ -22,8 +22,8 @@ export class BattlesService {
 
     return this._http
       .post(
-        this.baseUrl + '/battles/' + battle._id + '/vote',
-        {vote: vote},
+        this.baseUrl + '/videos/' + video._id + '/like',
+        '',
         { headers: headers }
       )
       .map(res => res.json())
@@ -33,7 +33,7 @@ export class BattlesService {
       });
   }
 
-  unvoteBattle(battle: any) {
+  unlikeVideo(video: any) {
     let headers = new Headers();
 
     headers.append('Content-Type', 'application/json');
@@ -41,7 +41,7 @@ export class BattlesService {
 
     return this._http
       .delete(
-        this.baseUrl + '/battles/' + battle._id + '/vote',
+        this.baseUrl + '/videos/' + video._id + '/like',
         { headers: headers }
       )
       .map(res => res.json())
@@ -51,9 +51,9 @@ export class BattlesService {
       });
   }
 
-  getProfileBattles() {
+  getVideo(id) {
+    console.log(id)
     let headers = new Headers();
-    let username = localStorage.getItem("username");
 
     headers.append('Content-Type', 'application/json');
     headers.append('x-access-token', localStorage.getItem("token"));
@@ -61,33 +61,14 @@ export class BattlesService {
 
     return this._http
       .get(
-        this.baseUrl + '/profile/' + username + '/videos',
+        this.baseUrl + '/video/' + id,
         { headers: headers }
       )
       .map(res => res.json())
       .map((res) => {
-        console.log(res);
         return res;
       });
   }
 
-  getFeedBattles() {
-    let headers = new Headers();
-
-    headers.append('Content-Type', 'application/x-www-form-urlencoded');
-    headers.append('x-access-token', localStorage.getItem("token"));
-
-
-    return this._http
-      .get(
-        this.baseUrl + '/battles/feed',
-        { headers: headers }
-      )
-      .map(res => res.json())
-      .map((res) => {
-        console.log(res);
-        return res;
-      });
-  }
 
 }

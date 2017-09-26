@@ -12,8 +12,9 @@
       </video>
     </div>
     <div class="video-metadata">
-      <a class="title" href="#">{{video.title}}</a>
+      <a class="title clickable" [routerLink]="['../video', video._id]">{{video.title}}</a>
       <p class="video-description">{{video.description}}</p>
+      <div class="text-center"><button type="button" (click)="challenge(video)" name="button" class="btn btn-warning" data-toggle="modal" data-target="#myModal">Challenge !</button></div>
     </div>
     <div class="divider">
     </div>
@@ -30,4 +31,46 @@
       <img (click)="like(video)" *ngIf="video.isLiked == false" class="pull-right" src="../../assets/img/unlike.png" style="margin-right:10px;" width="20" height="20">
     </div>
   </div>
+
+  <div class="modal fade" id="myModal" role="dialog">
+    <div class="modal-dialog">
+
+
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h1 class="text-center">Upload a profile picture</h1>
+        </div>
+        <form #form="ngForm" (submit)="submit(form.value)" class="form col-md-12 center-block">
+
+        <div class="modal-body">
+              <div class="form-group text-center">
+                <label class="btn btn-primary" for="video">
+                <input id="video" type="file" name="video" style="display:none"
+                onchange="$('#upload-file-info').html(this.files[0].name)">
+                Choose your file
+                </label>
+                <span class='label label-info' id="upload-file-info"></span>
+              </div>
+
+              <div class="form-group text-center">
+                <label><b>Title:</b></label>
+                <input class="form-control" id="title" type="text" name="title" style="text-align:center" >
+              </div>
+              <div class="form-group">
+              <label><b>Description:</b></label>
+              <textarea class="form-control" id="description" maxlength=255 placeholder="max 255 characters" name="description" style="text-align:center"></textarea>
+              </div>
+              <div class="text-center"><button type="submit" class="btn btn-success">Submit</button></div>
+        </div>
+      </form>
+
+        <div class="modal-footer">
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
 </div>

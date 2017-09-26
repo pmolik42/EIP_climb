@@ -24,9 +24,9 @@ import { SettingsComponent } from './settings/settings-page.component';
 import { ProfileComponent } from './profile/profile.component';
 import { ProfileVideosComponent } from './profile/videos/videos.component';
 import { BookComponent } from './profile/book/book.component';
-import { OverviewComponent } from './settings/overview/overview.component';
 import { SettingsProfileComponent } from './settings/profile/profile.component';
 import { UploadComponent } from './upload/upload.component';
+import { VideoComponent } from './video/video.component';
 
 @NgModule({
   declarations: [
@@ -42,9 +42,9 @@ import { UploadComponent } from './upload/upload.component';
     ProfileComponent,
     ProfileVideosComponent,
     BookComponent,
-    OverviewComponent,
     SettingsProfileComponent,
-    UploadComponent
+    UploadComponent,
+    VideoComponent
   ],
   imports: [
     BrowserModule,

@@ -30,7 +30,7 @@ export class AuthService {
       FB.login(function(response) {
         // handle the response
         FB.api('/me', {fields: 'name,first_name,last_name,email,gender,picture'}, function(response) {
-            console.log("Response - > " + response)
+            console.log("Response - > " + JSON.stringify(response))
             console.log("Email -> " + response.email);
             if (response.email) {
               var name = response.name;
@@ -61,7 +61,7 @@ export class AuthService {
                 console.log('Res -> ' + JSON.stringify(res))
                   console.log('Return res')
                 return res;
-              }, {scope: "email"});
+              });
             }
             else {
               alert("It seems that you didn't confirm the email address you use with Facebook :)")
